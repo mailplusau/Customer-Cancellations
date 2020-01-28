@@ -457,8 +457,10 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
 					name: 'name'
 				}, {
 					name: 'internalId'
-				}]
+				}],
+				filters: ['isinactive', 'is', 'false']
 			});
+
 
 			industry_search.run().each(function(searchResult) {
 
@@ -482,7 +484,8 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
 					name: 'name'
 				}, {
 					name: 'internalId'
-				}]
+				}],
+				filters: ['isinactive', 'is', 'false']
 			});
 
 			industry_search.run().each(function(searchResult) {
@@ -507,7 +510,8 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
 					name: 'name'
 				}, {
 					name: 'internalId'
-				}]
+				}],
+				filters: ['isinactive', 'is', 'false']
 			});
 
 			industry_search.run().each(function(searchResult) {
