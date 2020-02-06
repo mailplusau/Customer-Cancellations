@@ -270,7 +270,7 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
                 name: 'custrecord_customer',
                 operator: search.Operator.IS,
                 values: customer_id
-            } ));
+            }));
 
 
             commRegSearch.run().each(function(searchResult) {
@@ -549,7 +549,10 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
 
 
 
-            var customerRecordId = customerRecord.save();
+            var customerRecordId = customerRecord.save({
+                enableSourcing: false,
+                ignoreMandatoryFields: true
+            });
 
             return customerRecordId;
 
