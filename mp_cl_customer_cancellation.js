@@ -270,7 +270,7 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
                 name: 'custrecord_customer',
                 operator: search.Operator.IS,
                 values: customer_id
-            } ));
+            }));
 
 
             commRegSearch.run().each(function(searchResult) {
@@ -320,10 +320,12 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
                 value: $('#cancel_comp option:selected').val(),
             });
 
-            customerRecord.setValue({
-                fieldId: 'entitystatus',
-                value: 22,
-            });
+            //Customer Status will be changes by the Saved Mass Update that runs everyday.
+            
+            // customerRecord.setValue({
+            //     fieldId: 'entitystatus',
+            //     value: 22,
+            // });
 
             var customerRecordId = customerRecord.save();
 
@@ -520,10 +522,10 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
                 id: customer_id
             });
 
-            customerRecord.setValue({
-                fieldId: 'entitystatus',
-                value: 22,
-            });
+            // customerRecord.setValue({
+            //     fieldId: 'entitystatus',
+            //     value: 22,
+            // });
 
             customerRecord.setValue({
                 fieldId: 'custentity13',
@@ -549,7 +551,10 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
 
 
 
-            var customerRecordId = customerRecord.save();
+            var customerRecordId = customerRecord.save({
+                enableSourcing: false,
+                ignoreMandatoryFields: true
+            });
 
             return customerRecordId;
 
