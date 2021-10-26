@@ -320,8 +320,18 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
                 value: $('#cancel_comp option:selected').val(),
             });
 
+            customerRecord.setValue({
+                fieldId: 'custentity_service_cancelled_by',
+                value: runtime.getCurrentUser().id
+            });
+
+            customerRecord.setValue({
+                fieldId: 'custentity_service_cancelled_on',
+                value: getDate()
+            });
+
             //Customer Status will be changes by the Saved Mass Update that runs everyday.
-            
+
             // customerRecord.setValue({
             //     fieldId: 'entitystatus',
             //     value: 22,
@@ -540,6 +550,16 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
             customerRecord.setValue({
                 fieldId: 'custentity_service_cancellation_reason',
                 value: cancel_reason,
+            });
+
+             customerRecord.setValue({
+                fieldId: 'custentity_service_cancelled_by',
+                value: runtime.getCurrentUser().id
+            });
+
+            customerRecord.setValue({
+                fieldId: 'custentity_service_cancelled_on',
+                value: getDate()
             });
 
             if (!isNullorEmpty(cancel_comp)) {
