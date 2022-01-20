@@ -7,7 +7,7 @@
  * Description: Hit RTA API to inform to deactivate customer.
  *
  * @Last modified by:   ankithravindran
- * @Last modified time: 2022-01-19T10:00:35+11:00
+ * @Last modified time: 2022-01-20T12:42:56+11:00
  *
  */
 
@@ -29,12 +29,14 @@ function main() {
   resultCustomerLostTomorrowSearch.forEachResult(function(searchResult) {
     var internalID = searchResult.getValue("internalid");
     var entityID = searchResult.getValue("entityid");
-    var companyName = searchResult.getValue("compnayname");
+    var companyName = searchResult.getValue("companyname");
     var partnerID = searchResult.getValue("partner");
+    var dateEffective = searchResult.getValue("custentity13");
     var partnerText = searchResult.getText("partner");
 
-    nlapiSendEmail(696992, ['mailplussupport@protechly.com'],
-      'Deactivate Customer', ' Customer NS ID: ' + internalID +
+    nlapiSendEmail(409635, ['mailplussupport@protechly.com'],
+      'Deactivate Customer - ' + dateEffective, ' Customer NS ID: ' +
+      internalID +
       '</br> Customer: ' + entityID + ' ' + companyName +
       '</br> Customer Franchisee NS ID: ' + partnerID, [
         'raine.giderson@mailplus.com.au',
