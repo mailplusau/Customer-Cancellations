@@ -7,7 +7,7 @@
 
 
 define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log', 'N/redirect'],
-	function(ui, email, runtime, search, record, http, log, redirect) {
+	function (ui, email, runtime, search, record, http, log, redirect) {
 		function onRequest(context) {
 
 			var baseURL = 'https://1048144.app.netsuite.com';
@@ -29,6 +29,15 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
 			if (context.request.method === 'GET') {
 
 				var customer_id = context.request.parameters.custid;
+
+				var script_id = context.request.parameters.scriptid;
+				if (isNullorEmpty(script_id)) {
+					script_id = null;
+				}
+				var deploy_id = context.request.parameters.deployid;
+				if (isNullorEmpty(deploy_id)) {
+					deploy_id = null;
+				};
 				// customer_id = 586137;
 
 				var customer_record;
@@ -193,6 +202,8 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
 				inlineHtml += '<input id="customer_id" class="form-control" required value="' + customer_id + '" type="hidden"/></div></div>';
 
 				inlineHtml += '<input id="zee_id" class="form-control" required value="' + zee + '" type="hidden"/></div></div>';
+				inlineHtml += '<input id="script_id" class="form-control" required value="' + script_id + '" type="hidden"/></div></div>';
+				inlineHtml += '<input id="deploy_id" class="form-control" required value="' + deploy_id + '" type="hidden"/></div></div>';
 				// inlineHtml += '<input id="type" class="form-control" required value="' + type + '" type="hidden"/></div></div>';
 
 
@@ -311,7 +322,7 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
 				}]
 			});
 
-			industry_search.run().each(function(searchResult) {
+			industry_search.run().each(function (searchResult) {
 
 				var listValue = searchResult.getValue('name');
 				var listID = searchResult.getValue('internalId');
@@ -341,7 +352,7 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
 			inlineQty += '<div class="form-group container zee_section">';
 			inlineQty += '<div class="row">';
 			inlineQty += '<div class="col-xs-6 zee"><div class="input-group"><span class="input-group-addon" id="zee_text">FRANCHISEE <span class="mandatory">*</span></span><select id="zee" class="form-control zee" readonly><option value=0></option>';
-			resultSetZees.each(function(searchResultZees) {
+			resultSetZees.each(function (searchResultZees) {
 
 				zeeId = searchResultZees.getValue('internalid');
 				zeeName = searchResultZees.getValue('companyname');
@@ -462,7 +473,7 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
 			});
 
 
-			industry_search.run().each(function(searchResult) {
+			industry_search.run().each(function (searchResult) {
 
 				var listValue = searchResult.getValue('name');
 				var listID = searchResult.getValue('internalId');
@@ -488,7 +499,7 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
 				filters: ['isinactive', 'is', 'false']
 			});
 
-			industry_search.run().each(function(searchResult) {
+			industry_search.run().each(function (searchResult) {
 
 				var listValue = searchResult.getValue('name');
 				var listID = searchResult.getValue('internalId');
@@ -514,7 +525,7 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
 				filters: ['isinactive', 'is', 'false']
 			});
 
-			industry_search.run().each(function(searchResult) {
+			industry_search.run().each(function (searchResult) {
 
 				var listValue = searchResult.getValue('name');
 				var listID = searchResult.getValue('internalId');
@@ -552,7 +563,7 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
 				inlineQty += '<div class="col-xs-12 address_div">';
 				inlineQty += '<table border="0" cellpadding="15" id="address" class="table table-responsive table-striped address tablesorter" cellspacing="0" style="width: 100%;"><thead style="color: white;background-color: #607799;"><tr><th style="vertical-align: middle;text-align: center;"><b>CREATED DATE</b></th><th style="vertical-align: middle;text-align: center;"><b>ORGANISER</b></th><th style="vertical-align: middle;text-align: center;"><b>MESSAGE</b></th></tr></thead><tbody>';
 
-				savedNoteSearch.run().each(function(searchResult) {
+				savedNoteSearch.run().each(function (searchResult) {
 
 					var note_date = searchResult.getValue({
 						name: 'notedate'

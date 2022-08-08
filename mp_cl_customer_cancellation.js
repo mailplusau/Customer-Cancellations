@@ -4,7 +4,7 @@
  */
 
 define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/email'],
-    function(error, runtime, search, url, record, format, email) {
+    function (error, runtime, search, url, record, format, email) {
         var baseURL = 'https://1048144.app.netsuite.com';
         if (runtime.EnvType == "SANDBOX") {
             baseURL = 'https://system.sandbox.netsuite.com';
@@ -55,21 +55,21 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
 
             //JQuery functions that needs to be carried out based on User Interaction
 
-            $(window).load(function() {
+            $(window).load(function () {
                 // Animate loader off screen
                 $(".se-pre-con").fadeOut("slow");
             });
 
-            $(".nav-tabs").on("click", "a", function(e) {
+            $(".nav-tabs").on("click", "a", function (e) {
 
                 $(this).tab('show');
             });
 
-            $(document).on('click', '#alert .close', function(e) {
+            $(document).on('click', '#alert .close', function (e) {
                 $(this).parent().hide();
             });
 
-            $(document).on('change', '#survey1', function(e) {
+            $(document).on('change', '#survey1', function (e) {
                 if ($('#survey1 option:selected').val() == 2) {
                     $('#survey2').val(2);
                     $('#survey2').hide()
@@ -87,7 +87,7 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
                 }
             });
 
-            $(document).on("change", ".zee_dropdown", function(e) {
+            $(document).on("change", ".zee_dropdown", function (e) {
 
                 var zee = $(this).val();
 
@@ -100,7 +100,7 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
                 window.location.href = url;
             });
 
-            $(document).on('change', '#campaign', function(e) {
+            $(document).on('change', '#campaign', function (e) {
                 var campaign_id = $('#campaign option:selected').val();
                 var campaign_record_type = $('#campaign option:selected').attr('data-recordtype');
 
@@ -118,7 +118,7 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
 
 
 
-            $(document).on('click', '#create_note', function(event) {
+            $(document).on('click', '#create_note', function (event) {
 
                 var result = validate('true');
                 if (result == false) {
@@ -128,15 +128,32 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
                 // if (!isNullorEmpty($('#note').val())) {
                 //     createUserNote(customer_id);
                 // }
-                var params2 = {
-                    custid: customer_id,
-                    sales_record_id: null,
-                    reason: $('#cancel_reason option:selected').text(),
-                    id: 'customscript_sl_customer_cancellation',
-                    deploy: 'customdeploy_sl_customer_cancellation',
-                    type: 'create',
-                    cancel: 'true'
-                };
+
+                var script_id = $('#script_id').val();
+                var deploy_id = $('#deploy_id').val();
+
+                if (!isNullorEmpty(script_id)) {
+                    var params2 = {
+                        custid: customer_id,
+                        sales_record_id: null,
+                        reason: $('#cancel_reason option:selected').text(),
+                        id: script_id,
+                        deploy: deploy_id,
+                        type: 'create',
+                        cancel: 'true'
+                    };
+                } else {
+                    var params2 = {
+                        custid: customer_id,
+                        sales_record_id: null,
+                        reason: $('#cancel_reason option:selected').text(),
+                        id: 'customscript_sl_customer_cancellation',
+                        deploy: 'customdeploy_sl_customer_cancellation',
+                        type: 'create',
+                        cancel: 'true'
+                    };
+                }
+
                 params2 = JSON.stringify(params2);
                 var par = {
                     params: params2
@@ -273,7 +290,7 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
             }));
 
 
-            commRegSearch.run().each(function(searchResult) {
+            commRegSearch.run().each(function (searchResult) {
 
                 var commRegID = searchResult.getValue({
                     name: 'internalid'
@@ -483,10 +500,18 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
                 value: 'Cancellation'
             });
 
-            phoneCallRecord.setValue({
-                fieldId: 'assigned',
-                value: $('#zee_id').val()
-            });
+            if (isNullorEmpty($('#zee_id').val())) {
+                phoneCallRecord.setValue({
+                    fieldId: 'assigned',
+                    value: 435
+                });
+            } else {
+                phoneCallRecord.setValue({
+                    fieldId: 'assigned',
+                    value: $('#zee_id').val()
+                });
+
+            }
 
             phoneCallRecord.setValue({
                 fieldId: 'status',
@@ -506,7 +531,7 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
             }));
 
 
-            commRegSearch.run().each(function(searchResult) {
+            commRegSearch.run().each(function (searchResult) {
 
                 var commRegID = searchResult.getValue({
                     name: 'internalid'
@@ -552,7 +577,7 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
                 value: cancel_reason,
             });
 
-             customerRecord.setValue({
+            customerRecord.setValue({
                 fieldId: 'custentity_service_cancelled_by',
                 value: runtime.getCurrentUser().id
             });
@@ -690,7 +715,7 @@ define(['N/error', 'N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/
             }
             var weights = [10, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19],
                 checksum = str.split('').map(Number).reduce(
-                    function(total, digit, index) {
+                    function (total, digit, index) {
                         if (!index) {
                             digit--;
                         }
