@@ -123,7 +123,7 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
                 //Loading Section that gets displayed when the page is being loaded
                 inlineHtml += loadingSection();
  
-                inlineHtml += '<div class="container" style="background-color: lightblue;font-size: 14px;"><p><b><u>Action Buttons</u></b><ol><li><b style="color: #5cb85c;">SAVE</b>: Click button to process new quote.</li><li><b style="color: #d9534f;">NOTIFY</b>: Click button to notify the IT Team to process the cancellation.</li></ol></p></div></br>'
+                inlineHtml += '<div class="container" style="background-color: lightblue;font-size: 14px;"><p><b><u>Action Buttons</u></b><ol><li><b style="color: #5cb85c;">SAVE</b>: Click button to process new quote.</li><li><b style="color: #d9534f;">CANCEL</b>: Click button to capture cancellation date and reason. This will also notify the franchisee and IT team.</li></ol></p></div></br>'
 
                 inlineHtml += '<div id="container">'
 
@@ -138,7 +138,7 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
                     layoutType: ui.FieldLayoutType.STARTROW
                 }).defaultValue = inlineHtml;
 
-                form.clientScriptFileId = 6324639;
+                form.clientScriptFileId = 6332255;
 
                 context.response.writePage(form);
             } else {

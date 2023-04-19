@@ -289,58 +289,7 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
             $(".notifyitteam").click(function () {
                 var customerInternalId = $(this).attr("data-id");
 
-                var customer_record = record.load({
-                    type: record.Type.CUSTOMER,
-                    id: parseInt(customerInternalId),
-                    isDynamic: true
-                });
-
-                var entityid = customer_record.getValue({
-                    fieldId: 'entityid'
-                });
-                var companyName = customer_record.getValue({
-                    fieldId: 'companyname'
-                });
-                var cancellationDate = customer_record.getValue({
-                    fieldId: 'custentity13'
-                });
-
-                var cancellationNotice = customer_record.getText({
-                    fieldId: 'custentity_service_cancellation_notice'
-                });
-
-                var cancellationReason = customer_record.getText({
-                    fieldId: 'custentity_service_cancellation_reason'
-                });
-
-                var cancellationCompetitor = customer_record.getText({
-                    fieldId: 'custentity14',
-                    value: $('#cancel_comp option:selected').val(),
-                });
-
-                customer_record.setValue({
-                    fieldId: 'custentity_customer_saved',
-                    value: 2
-                });
-
-                customer_record.save();
-
-                var emailBody = 'Please process the cancellation of the below customer. </br></br>Customer Internal ID: ' + parseInt(customerInternalId) + '</br>'
-                emailBody += 'Customer Entity ID: ' + entityid + '</br>'
-                emailBody += 'Customer Name: ' + companyName + '</br></br>'
-                emailBody += 'Cancellation Date: ' + cancellationDate + '</br>';
-                emailBody += 'Cancellation Reason: ' + cancellationReason + '</br>';
-                emailBody += 'Cancellation Notice: ' + cancellationNotice + '</br>';
-
-                email.send({
-                    author: 112209,
-                    recipients: ['popie.popie@mailplus.com.au', 'fiona.harrison@mailplus.com.au'],
-                    subject: 'Cancel Customer - ' + entityid + ' ' + companyName,
-                    body: emailBody,
-                    cc: ['ankith.ravindran@mailplus.com.au', 'luke.forbes@mailplus.com.au']
-                });
-
-                var convertLink = 'https://1048144.app.netsuite.com/app/site/hosting/scriptlet.nl?script=1719&script=1719&deploy=1&deploy=1&compid=1048144';
+                var convertLink = 'https://1048144.app.netsuite.com/app/site/hosting/scriptlet.nl?script=1722&deploy=1&compid=1048144&custid=' + parseInt(customerInternalId);
                 window.location.href = convertLink;
 
             });
@@ -524,7 +473,7 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
                             debt_row.custInternalID +
                             '" value="SAVE" class="form-control btn btn-xs btn-success savecustomer" style="font-weight: bold; cursor: pointer !important;width: fit-content;" />     <input type="button" id="" data-id="' +
                             debt_row.custInternalID +
-                            '" value="NOTIFY" class="form-control btn btn-xs btn-danger notifyitteam" style="font-weight: bold;cursor: pointer !important;width: fit-content;" />';
+                            '" value="CANCEL" class="form-control btn btn-xs btn-danger notifyitteam" style="font-weight: bold;cursor: pointer !important;width: fit-content;" />';
                     } else {
                         var salesRecordInternalId = null;
                         for (var i = 0; i < resultRange.length; i++) {
@@ -539,7 +488,7 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
                                 salesRecordInternalId +
                                 '" value="VIEW" class="form-control btn btn-xs btn-primary viewcustomer" style="font-weight: bold; cursor: pointer !important;width: fit-content;" />     <input type="button" id="" data-id="' +
                                 debt_row.custInternalID +
-                                '" value="NOTIFY" class="form-control btn btn-xs btn-danger notifyitteam" style="font-weight: bold;cursor: pointer !important;width: fit-content;" />';
+                                '" value="CANCEL" class="form-control btn btn-xs btn-danger notifyitteam" style="font-weight: bold;cursor: pointer !important;width: fit-content;" />';
                         }
                     }
 
