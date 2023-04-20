@@ -328,12 +328,15 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/search', 'N/record', 'N/log', 'N/re
                 var customerId = context.request.parameters.custpage_customer_id;
                 var fileObj = context.request.files.upload_file_1;
                 var note = context.request.parameters.custpage_note;
+                var emailBody = context.request.parameters.custpage_email_body;
+                var emailSubject = context.request.parameters.custpage_email_subject;
+                var zee_email = context.request.parameters.custpage_send_to;
 
                 log.debug({
                     title: 'customerId',
                     details: customerId
                 });
-                
+
 
                 var proofid = null;
 
@@ -366,10 +369,16 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/search', 'N/record', 'N/log', 'N/re
                     isDynamic: true
                 });
 
+                var fileEmailAttachObj = null;
+
                 if (!isNullorEmpty(proofid)) {
                     customer_record.setValue({
                         fieldId: 'custentity_cancel_proof',
                         value: proofid
+                    });
+
+                    fileEmailAttachObj = file.load({
+                        id: proofid
                     });
                 }
 
@@ -416,6 +425,41 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/search', 'N/record', 'N/log', 'N/re
                 // });
 
                 // var userNoteRecordId = userNoteRecord.save();
+                if (!isNullorEmpty(fileEmailAttachObj)) {
+                    email.send({
+                        author: 112209,
+                        recipients: [zee_email],
+                        subject: emailSubject,
+                        body: emailBody,
+                        cc: [
+                            'fiona.harrison@mailplus.com.au',
+                            'turkan.koc@mailplus.com.au',
+                            'popie.popie@mailplus.com.au'
+                        ],
+                        attachments: [fileEmailAttachObj],
+                        relatedRecords: {
+                            entityId: parseInt(customerId),
+                        }
+                    });
+
+                } else {
+                    email.send({
+                        author: 112209,
+                        recipients: [zee_email],
+                        subject: emailSubject,
+                        body: emailBody,
+                        cc: [
+                            'fiona.harrison@mailplus.com.au',
+                            'turkan.koc@mailplus.com.au',
+                            'popie.popie@mailplus.com.au'
+                        ],
+                        relatedRecords: {
+                            entityId: parseInt(customerId),
+                        }
+                    });
+
+                }
+
 
                 context.response.sendRedirect({
                     type: http.RedirectType.RECORD,

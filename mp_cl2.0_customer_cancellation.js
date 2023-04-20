@@ -370,6 +370,21 @@ define(['N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/currentReco
                 value: noteBody
             });
 
+            test_record.setValue({
+                fieldId: 'custpage_send_to',
+                value: zee_email
+            });
+
+            test_record.setValue({
+                fieldId: 'custpage_email_subject',
+                value: emailSubject
+            });
+
+            test_record.setValue({
+                fieldId: 'custpage_email_body',
+                value: emailBody
+            });
+
 
             var customer_record = record.load({
                 type: record.Type.CUSTOMER,
@@ -531,18 +546,7 @@ define(['N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/currentReco
             var userNoteRecordId = userNoteRecord.save();
 
 
-            email.send({
-                author: 112209,
-                recipients: [zee_email],
-                subject: emailSubject,
-                body: emailBody,
-                cc: [
-                    'fiona.harrison@mailplus.com.au',
-                    'turkan.koc@mailplus.com.au',
-                    'popie.popie@mailplus.com.au'
-                ]
-            });
-
+            
             return true;
         }
 
