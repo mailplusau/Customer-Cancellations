@@ -80,31 +80,16 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
             $('.loading_section').removeClass('hide');
         }
 
-        function beforeSubmit() {
-            $('#customer_benchmark_preview').hide();
-            $('#customer_benchmark_preview').addClass('hide');
-
-            $('.loading_section').removeClass('hide');
-        }
 
         function afterSubmit() {
-            $('.date_filter_section').removeClass('hide');
-            $('.period_dropdown_section').removeClass('hide');
-
+            
             $('.loading_section').addClass('hide');
 
-            if (!isNullorEmpty($('#result_customer_benchmark').val())) {
-                $('#customer_benchmark_preview').removeClass('hide');
-                $('#customer_benchmark_preview').show();
-            }
-
-            $('#result_customer_benchmark').on('change', function () {
-                $('#customer_benchmark_preview').removeClass('hide');
-                $('#customer_benchmark_preview').show();
-            });
-
-            $('#customer_benchmark_preview').removeClass('hide');
-            $('#customer_benchmark_preview').show();
+            $('.table_section').removeClass('hide');
+            $('.cust_filter_section').removeClass('hide');
+            $('.cust_dropdown_section').removeClass('hide');
+            $('.zee_available_buttons_section').removeClass('hide');
+            $('.instruction_div').removeClass('hide');
         }
 
         var paramUserId = null;
@@ -123,43 +108,16 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
             debtDataSet = [];
             debt_set = [];
 
-            /**
-             *  Submit Button Function
-             */
-            $('#submit').click(function () {
-                // Ajax request
-                var fewSeconds = 10;
-                var btn = $(this);
-                btn.addClass('disabled');
-                // btn.addClass('')
-                setTimeout(function () {
-                    btn.removeClass('disabled');
-                }, fewSeconds * 1000);
-
-                debtDataSet = [];
-                debt_set = [];
-
-                beforeSubmit();
-                submitSearch();
-
-                return true;
-            });
-
             $("#applyFilter").click(function () {
 
                 userId = $('#user_dropdown option:selected').val();
 
-                var url = baseURL + "/app/site/hosting/scriptlet.nl?script=1659&deploy=1&user=" + userId;
-
+                var url = baseURL + "/app/site/hosting/scriptlet.nl?script=1719&deploy=1&user=" + userId;
 
                 window.location.href = url;
             });
 
 
-            /**
-             *  Auto Load Submit Search and Load Results on Page Initialisation
-             */
-            pageLoad();
             submitSearch();
             var dataTable = $('#mpexusage-cancel_list').DataTable();
 
@@ -369,6 +327,15 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
                 type: 'customer',
                 id: 'customsearch_cust_cancellation_requested'
             });
+
+            if (!isNullorEmpty(paramUserId)) {
+                custListCancellationRequestSearch.filters.push(search.createFilter({
+                    name: 'custentity_sales_rep_assigned',
+                    join: 'partner',
+                    operator: search.Operator.IS,
+                    values: paramUserId
+                }));
+            } 
 
             custListCancellationRequestSearch.run().each(function (
                 custListCancellationRequestSearchResultSet) {
