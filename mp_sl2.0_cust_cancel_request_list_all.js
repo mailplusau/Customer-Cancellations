@@ -32,6 +32,14 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
                 zee = context.request.parameters.zee;
                 var paramUserId = context.request.parameters.user;
 
+                if (userId == '668712') {
+                    paramUserId = 668712
+                } else if (userId == '696160') {
+                    paramUserId = 696160
+                } else if (userId == '668711') {
+                    paramUserId = 668711
+                }
+
                 log.debug({
                     title: 'userId',
                     details: userId
@@ -122,7 +130,7 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
 
                 //Loading Section that gets displayed when the page is being loaded
                 inlineHtml += loadingSection();
-                
+
                 inlineHtml += '<div class="container instruction_div hide" style="background-color: lightblue;font-size: 14px;"><p><b><u>Action Buttons</u></b><ol><li><b style="color: #5cb85c;">SAVE</b>: Click button to process new quote.</li><li><b style="color: #d9534f;">CANCEL</b>: Click button to capture cancellation date and reason. This will also notify the franchisee and IT team.</li></ol></p></div></br>'
 
                 inlineHtml += '<div id="container">'

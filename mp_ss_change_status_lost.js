@@ -34,16 +34,16 @@ function main() {
     var dateEffective = searchResult.getValue("custentity13");
     var partnerText = searchResult.getText("partner");
 
-    nlapiSendEmail(409635, ['mailplussupport@protechly.com'],
-      'Deactivate Customer - ' + dateEffective, ' Customer NS ID: ' +
-      internalID +
-      '</br> Customer: ' + entityID + ' ' + companyName +
-      '</br> Customer Franchisee NS ID: ' + partnerID, [
-        'raine.giderson@mailplus.com.au',
-        'ankith.ravindran@mailplus.com.au',
-        'rianne.mansell@mailplus.com.au',
-        'fiona.harrison@mailplus.com.au'
-      ]);
+    // nlapiSendEmail(409635, ['mailplussupport@protechly.com'],
+    //   'Deactivate Customer - ' + dateEffective, ' Customer NS ID: ' +
+    //   internalID +
+    //   '</br> Customer: ' + entityID + ' ' + companyName +
+    //   '</br> Customer Franchisee NS ID: ' + partnerID, [
+    //     'raine.giderson@mailplus.com.au',
+    //     'ankith.ravindran@mailplus.com.au',
+    //     'rianne.mansell@mailplus.com.au',
+    //     'fiona.harrison@mailplus.com.au'
+    //   ]);
 
     var customerJSON = '{';
     customerJSON += '"ns_id" : "' + internalID + '"'
