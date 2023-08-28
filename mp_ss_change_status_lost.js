@@ -26,7 +26,7 @@ function main() {
 
   var resultCustomerLostTomorrowSearch = customerLostTomorrowSearch.runSearch();
 
-  resultCustomerLostTomorrowSearch.forEachResult(function(searchResult) {
+  resultCustomerLostTomorrowSearch.forEachResult(function (searchResult) {
     var internalID = searchResult.getValue("internalid");
     var entityID = searchResult.getValue("entityid");
     var companyName = searchResult.getValue("companyname");
@@ -34,16 +34,15 @@ function main() {
     var dateEffective = searchResult.getValue("custentity13");
     var partnerText = searchResult.getText("partner");
 
-    // nlapiSendEmail(409635, ['mailplussupport@protechly.com'],
-    //   'Deactivate Customer - ' + dateEffective, ' Customer NS ID: ' +
-    //   internalID +
-    //   '</br> Customer: ' + entityID + ' ' + companyName +
-    //   '</br> Customer Franchisee NS ID: ' + partnerID, [
-    //     'raine.giderson@mailplus.com.au',
-    //     'ankith.ravindran@mailplus.com.au',
-    //     'rianne.mansell@mailplus.com.au',
-    //     'fiona.harrison@mailplus.com.au'
-    //   ]);
+    var record = nlapiLoadRecord('customer', internalID);
+    record.setFieldValue('entitystatus', 22);
+    nlapiSubmitRecord(record);
+
+    nlapiSendEmail(409635, ['popie.popie@mailplus.com.au', 'fiona.harrison@mailplus.com.au'],
+      'Customer Cancelled - ' + dateEffective, ' Customer NS ID: ' +
+      internalID +
+      '</br> Customer: ' + entityID + ' ' + companyName +
+      '</br> Customer Franchisee NS ID: ' + partnerID, ['ankith.ravindran@mailplus.com.au']);
 
     var customerJSON = '{';
     customerJSON += '"ns_id" : "' + internalID + '"'

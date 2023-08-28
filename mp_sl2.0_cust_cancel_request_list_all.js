@@ -32,13 +32,18 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
                 zee = context.request.parameters.zee;
                 var paramUserId = context.request.parameters.user;
 
-                if (userId == '668712') {
-                    paramUserId = 668712
-                } else if (userId == '696160') {
-                    paramUserId = 696160
-                } else if (userId == '668711') {
-                    paramUserId = 668711
+                if (isNullorEmpty(paramUserId)) {
+                    if (userId == '668712') {
+                        paramUserId = 668712
+                    } else if (userId == '696160') {
+                        paramUserId = 696160
+                    } else if (userId == '668711') {
+                        paramUserId = 668711
+                    }
+                } else {
+
                 }
+
 
                 log.debug({
                     title: 'userId',
