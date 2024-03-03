@@ -31,6 +31,7 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
                 var last_date = context.request.parameters.last_date;
                 zee = context.request.parameters.zee;
                 var paramUserId = context.request.parameters.user;
+                var saletype = context.request.parameters.saletype;
 
                 if (isNullorEmpty(paramUserId)) {
                     if (userId == '668712') {
@@ -63,6 +64,10 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
                     userId = null;
                 }
 
+                if (isNullorEmpty(saletype)) {
+                    saletype = null;
+                }
+
                 if (isNullorEmpty(paramUserId)) {
                     paramUserId = null;
                 } else {
@@ -70,7 +75,7 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
                 }
 
                 var form = ui.createForm({
-                    title: 'Cancellation Request - List'
+                    title: 'Service Change Request - List'
                 });
 
 
@@ -100,6 +105,14 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
                 }).updateDisplayType({
                     displayType: ui.FieldDisplayType.HIDDEN
                 }).defaultValue = paramUserId;
+
+                form.addField({
+                    id: 'custpage_sale_type',
+                    type: ui.FieldType.TEXT,
+                    label: 'Table CSV'
+                }).updateDisplayType({
+                    displayType: ui.FieldDisplayType.HIDDEN
+                }).defaultValue = saletype;
 
                 form.addField({
                     id: 'custpage_contact_id',
@@ -140,7 +153,7 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
 
                 inlineHtml += '<div id="container">'
                 //Section to select the Sales Rep or show the default Sales Rep based on loadingSection
-                inlineHtml += userDropdownSection(userId);
+                inlineHtml += userDropdownSection(userId, saletype);
 
                 inlineHtml += dataTable('cancel_list');
                 inlineHtml += '</div>';
@@ -187,7 +200,7 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
             return inlineHtml;
         }
 
-        function userDropdownSection(userId) {
+        function userDropdownSection(userId, saletype) {
 
             var searchedSalesTeam = search.load({
                 id: 'customsearch_active_employees_3'
@@ -232,6 +245,38 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
             });
             inlineHtml += '</select>';
             inlineHtml += '</div></div></div></div>';
+
+            inlineHtml += '<div class="form-group container service_change_type_section hide">';
+            inlineHtml += '<div class="row">';
+            inlineHtml += '<div class="col-xs-12 commencementtype"><div class="input-group"><span class="input-group-addon" id="commencementtype_text">Sale Type </span><select id="commencementtype" class="form-control commencementtype" ><option></option>';
+
+            var results = search.create({
+                type: 'customlist_sale_type',
+                columns: [{
+                    name: 'name'
+                }, {
+                    name: 'internalId'
+                }]
+            });
+            var resResult = results.run().getRange({
+                start: 0,
+                end: 20
+            });
+            resResult.forEach(function (res) {
+                var listValue = res.getValue({ name: 'name' });
+                var listID = res.getValue({ name: 'internalId' });
+                if (listID == saletype) { 
+                    inlineHtml += '<option value="' + listID + '" selected>' + listValue + '</option>';
+                } else if (listID == 13 || listID == 21 || listID == 7 || listID == 7 || listID == 15 || listID == 2) {
+                    inlineHtml += '<option value="' + listID + '" >' + listValue + '</option>';
+                }
+
+            });
+
+            inlineHtml += '</select></div></div>';
+            inlineHtml += '</div>';
+            inlineHtml += '</div>';
+
 
             inlineHtml +=
                 '<div class="form-group container zee_available_buttons_section hide">';

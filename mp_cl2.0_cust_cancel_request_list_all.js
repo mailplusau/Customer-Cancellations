@@ -52,6 +52,8 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
         var current_year_month = today_year + '-' + today_month;
         var difference_months = total_months - parseInt(today_month);
 
+        var saleType = 0;
+
 
         function isWeekday(year, month, day) {
             var day = new Date(year, month, day).getDay();
@@ -82,17 +84,19 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
 
 
         function afterSubmit() {
-            
+
             $('.loading_section').addClass('hide');
 
             $('.table_section').removeClass('hide');
             $('.cust_filter_section').removeClass('hide');
             $('.cust_dropdown_section').removeClass('hide');
+            $('.service_change_type_section').removeClass('hide');
             $('.zee_available_buttons_section').removeClass('hide');
             $('.instruction_div').removeClass('hide');
         }
 
         var paramUserId = null;
+        var paramSaleType = null;
 
         function pageInit() {
 
@@ -104,6 +108,9 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
             paramUserId = val1.getValue({
                 fieldId: 'custpage_sales_rep_id'
             });
+            paramSaleType = val1.getValue({
+                fieldId: 'custpage_sale_type'
+            });
 
             debtDataSet = [];
             debt_set = [];
@@ -111,8 +118,9 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
             $("#applyFilter").click(function () {
 
                 userId = $('#user_dropdown option:selected').val();
+                saleType = $('#commencementtype option:selected').val();
 
-                var url = baseURL + "/app/site/hosting/scriptlet.nl?script=1719&deploy=1&user=" + userId;
+                var url = baseURL + "/app/site/hosting/scriptlet.nl?script=1719&deploy=1&user=" + userId + '&saletype=' + saleType;
 
                 window.location.href = url;
             });
@@ -335,7 +343,16 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
                     operator: search.Operator.IS,
                     values: paramUserId
                 }));
-            } 
+            }
+
+            if (!isNullorEmpty(paramSaleType)) {
+                custListCancellationRequestSearch.filters.push(search.createFilter({
+                    name: 'custentity_cust_service_change_type',
+                    join: null,
+                    operator: search.Operator.IS,
+                    values: paramSaleType
+                }));
+            }
 
             custListCancellationRequestSearch.run().each(function (
                 custListCancellationRequestSearchResultSet) {
