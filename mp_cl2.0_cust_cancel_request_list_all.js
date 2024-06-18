@@ -285,6 +285,41 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
                 data: debtDataSet,
                 pageLength: 1000,
                 order: [[5, 'des']],
+                layout: {
+                    topStart: {
+                        buttons: [{
+                            extend: 'copy', text: 'Copy',
+                            className: 'btn btn-default exportButtons',
+                            exportOptions: {
+                                columns: ':not(.notexport)'
+                            }
+                        }, {
+                            extend: 'csv', text: 'CSV',
+                            className: 'btn btn-default exportButtons',
+                            exportOptions: {
+                                columns: ':not(.notexport)'
+                            }
+                        }, {
+                            extend: 'excel', text: 'Excel',
+                            className: 'btn btn-default exportButtons',
+                            exportOptions: {
+                                columns: ':not(.notexport)'
+                            }
+                        }, {
+                            extend: 'pdf', text: 'PDF',
+                            className: 'btn btn-default exportButtons',
+                            exportOptions: {
+                                columns: ':not(.notexport)'
+                            }
+                        }, {
+                            extend: 'print', text: 'Print',
+                            className: 'btn btn-default exportButtons',
+                            exportOptions: {
+                                columns: ':not(.notexport)'
+                            }
+                        }],
+                    }
+                },
                 columns: [{
                     title: 'ACTIONS'
                 }, {
@@ -321,6 +356,8 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
                 rowCallback: function (row, data, index) {
                     if (data[10] == 'Yes') {
                         $('td', row).css('background-color', '#DBE4C6');
+                    } else {
+                        $('td', row).css('background-color', '#FFFFFF');
                     }
                 }
             });
@@ -380,10 +417,16 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
                 var serviceCancellationRequestedDate = custListCancellationRequestSearchResultSet.getValue({
                     name: "custentity_cancellation_requested_date"
                 });
+                if (isNullorEmpty(serviceCancellationRequestedDate)) {
+                    serviceCancellationRequestedDate = ''
+                }
 
                 var serviceCancellationDate = custListCancellationRequestSearchResultSet.getValue({
                     name: "custentity13"
                 });
+                if (isNullorEmpty(serviceCancellationDate)) {
+                    serviceCancellationDate = ''
+                }
                 var requesterName = custListCancellationRequestSearchResultSet.getValue({
                     name: "custentity_hc_mailcon_name"
                 });
@@ -482,33 +525,41 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
                         debt_row.custEntityID + '</b></a>';
 
 
-                    var requestDateSplit = debt_row.serviceCancellationRequestedDate.split('/');
+                    if (!isNullorEmpty(debt_row.serviceCancellationRequestedDate)) {
+                        var requestDateSplit = debt_row.serviceCancellationRequestedDate.split('/');
 
-                    if (parseInt(requestDateSplit[1]) < 10) {
-                        requestDateSplit[1] = '0' + requestDateSplit[1]
+                        if (parseInt(requestDateSplit[1]) < 10) {
+                            requestDateSplit[1] = '0' + requestDateSplit[1]
+                        }
+
+                        if (parseInt(requestDateSplit[0]) < 10) {
+                            requestDateSplit[0] = '0' + requestDateSplit[0]
+                        }
+
+                        var requestDateString = requestDateSplit[2] + '-' + requestDateSplit[1] + '-' +
+                            requestDateSplit[0];
+                    } else {
+                        var requestDateString = ''
                     }
 
-                    if (parseInt(requestDateSplit[0]) < 10) {
-                        requestDateSplit[0] = '0' + requestDateSplit[0]
+
+
+                    if (!isNullorEmpty(debt_row.serviceCancellationDate)) {
+                        var cancellationDateSplit = debt_row.serviceCancellationDate.split('/');
+
+                        if (parseInt(cancellationDateSplit[1]) < 10) {
+                            cancellationDateSplit[1] = '0' + cancellationDateSplit[1]
+                        }
+
+                        if (parseInt(cancellationDateSplit[0]) < 10) {
+                            cancellationDateSplit[0] = '0' + cancellationDateSplit[0]
+                        }
+
+                        var cancellationDateString = cancellationDateSplit[2] + '-' + cancellationDateSplit[1] + '-' +
+                            cancellationDateSplit[0];
+                    } else {
+                        var cancellationDateString = ''
                     }
-
-                    var requestDateString = requestDateSplit[2] + '-' + requestDateSplit[1] + '-' +
-                        requestDateSplit[0];
-
-
-
-                    var cancellationDateSplit = debt_row.serviceCancellationDate.split('/');
-
-                    if (parseInt(cancellationDateSplit[1]) < 10) {
-                        cancellationDateSplit[1] = '0' + cancellationDateSplit[1]
-                    }
-
-                    if (parseInt(cancellationDateSplit[0]) < 10) {
-                        cancellationDateSplit[0] = '0' + cancellationDateSplit[0]
-                    }
-
-                    var cancellationDateString = cancellationDateSplit[2] + '-' + cancellationDateSplit[1] + '-' +
-                        cancellationDateSplit[0];
 
                     debtDataSet.push([linkURL,
                         customerIDLink,
