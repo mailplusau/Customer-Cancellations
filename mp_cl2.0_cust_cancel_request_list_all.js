@@ -248,7 +248,7 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
 
                 customer_record.save();
 
-                var convertLink = 'https://1048144.app.netsuite.com/app/site/hosting/scriptlet.nl?script=740&deploy=1&compid=1048144&callcenter=T&recid=' + parseInt(customerInternalId) + '&sales_record_id=' + newSalesRecord;
+                var convertLink = 'https://1048144.app.netsuite.com/app/site/hosting/scriptlet.nl?script=1900&deploy=1&compid=1048144&callCenter=T&customerId=' + parseInt(customerInternalId) + '&salesRecordId=' + newSalesRecord;
                 window.location.href = convertLink;
             })
 
