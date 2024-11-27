@@ -318,6 +318,10 @@ define(['N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/currentReco
                 formatDate(dateEffectiveString)
             }
 
+            if (isNullorEmpty($('#cancellation_in_out_bound option:selected').val())) {
+                alertMessage += 'Please Select Cancellation Direction - Inbound or Outbound</br>';
+            }
+
             if (isNullorEmpty($('#cancel_reason option:selected').val())) {
                 alertMessage += 'Please Select Cancellation Reason</br>';
             }
@@ -400,6 +404,11 @@ define(['N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/currentReco
             customer_record.setValue({
                 fieldId: 'custentity_service_cancellation_notice',
                 value: $('#cancel_notice option:selected').val(),
+            });
+
+            customer_record.setValue({
+                fieldId: 'custentity_service_cancellation_directio',
+                value: $('#cancellation_in_out_bound option:selected').val(),
             });
 
             customer_record.setValue({
