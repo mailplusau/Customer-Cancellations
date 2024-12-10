@@ -128,6 +128,9 @@ define([
 			customer_status_id = customer_record.getValue({
 				fieldId: "entitystatus",
 			});
+			var cancellation_notice = customer_record.getValue({
+				fieldId: "custentity_service_cancellation_notice",
+			});
 
 			// Customer Franchisee Text
 			zeeText = customer_record.getText({
@@ -167,15 +170,27 @@ define([
 			inlineHtml +=
 				'<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>';
 
-			form
-				.addField({
-					id: "upload_file_1",
-					label: "SERVICE CANCELLATION PROOF - PDF FILE ONLY",
-					type: ui.FieldType.FILE,
-				})
-				.updateLayoutType({
-					layoutType: ui.FieldLayoutType.OUTSIDEBELOW,
-				}).isMandatory = true;
+			if (cancellation_notice == 14) {
+				form
+					.addField({
+						id: "upload_file_1",
+						label: "SERVICE CANCELLATION PROOF - PDF FILE ONLY",
+						type: ui.FieldType.FILE,
+					})
+					.updateLayoutType({
+						layoutType: ui.FieldLayoutType.OUTSIDEBELOW,
+					}).isMandatory;
+			} else {
+				form
+					.addField({
+						id: "upload_file_1",
+						label: "SERVICE CANCELLATION PROOF - PDF FILE ONLY",
+						type: ui.FieldType.FILE,
+					})
+					.updateLayoutType({
+						layoutType: ui.FieldLayoutType.OUTSIDEBELOW,
+					}).isMandatory = true;
+			}
 
 			inlineHtml +=
 				'<div class="form-group container open_invoices requester_header">';
