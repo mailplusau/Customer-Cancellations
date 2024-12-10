@@ -554,6 +554,42 @@ define(['N/runtime', 'N/search', 'N/url', 'N/record', 'N/format', 'N/currentReco
 
             var userNoteRecordId = userNoteRecord.save();
 
+            var task_record = record.create({
+				type: "task",
+			});
+
+			task_record.setValue({
+				fieldId: "duedate",
+				value: getDateStoreNS(),
+			});
+
+			task_record.setValue({
+				fieldId: "company",
+				value: customerInternalID,
+			});
+
+			task_record.setValue({
+				fieldId: "title",
+				value: "Cancellation Processed - " + companyName,
+			});
+
+			task_record.setValue({
+				fieldId: "custevent_organiser",
+				value: runtime.getCurrentUser().id,
+			});
+			task_record.setValue({
+				fieldId: "assigned",
+				value: runtime.getCurrentUser().id,
+            });
+            task_record.setValue({
+                fieldId: "status",
+                value: "COMPLETE",
+            });
+
+			task_record.save({
+				ignoreMandatoryFields: true,
+			});
+
 
             
             return true;
