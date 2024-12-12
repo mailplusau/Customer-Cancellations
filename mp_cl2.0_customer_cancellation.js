@@ -283,18 +283,14 @@ define([
 	}
 
 	function saveRecord() {
+		console.log("inside save record");
 		var test_record = currentRecord.get();
 		var customer = parseInt(
 			test_record.getValue({
 				fieldId: "custpage_customer_id",
 			})
 		);
-
-		var uploadFile = test_record.getValue({
-			fieldId: "upload_file_1",
-		});
-
-		console.log(uploadFile);
+		console.log("customer: " + customer);
 
 		var recCustomer = record.load({
 			type: "customer",
@@ -355,15 +351,23 @@ define([
 		if (isNullorEmpty($("#cancel_reason option:selected").val())) {
 			alertMessage += "Please Select Cancellation Reason</br>";
 		}
-		if (isNullorEmpty(c)) {
+		if (isNullorEmpty($("#cancel_notice option:selected").val())) {
 			alertMessage += "Please Select Cancellation Notice</br>";
 		}
 
-		if ($("#cancel_notice option:selected").val() == 14) {
-			if (isNullorEmpty(uploadFile)) {
-				alertMessage += "Please Upload PDF of the cancellation email. </br>";
-			}
-		}
+		var uploadFile = test_record.getValue({
+			fieldId: "upload_file_1",
+		});
+
+		console.log(uploadFile);
+
+		// if ($("#cancel_notice option:selected").val() != 14) {
+		// 	if (isNullorEmpty(uploadFile)) {
+		// 		alertMessage += "Please Upload PDF of the cancellation email. </br>";
+		// 	}
+		// }
+
+		console.log("Validation complete");
 
 		if (alertMessage != "") {
 			showAlert(alertMessage);

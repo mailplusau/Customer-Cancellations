@@ -170,7 +170,17 @@ define([
 			inlineHtml +=
 				'<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>';
 
-			if (cancellation_notice == 14) {
+			// if (cancellation_notice == 14) {
+			// 	form
+			// 		.addField({
+			// 			id: "upload_file_1",
+			// 			label: "SERVICE CANCELLATION PROOF - PDF FILE ONLY",
+			// 			type: ui.FieldType.FILE,
+			// 		})
+			// 		.updateLayoutType({
+			// 			layoutType: ui.FieldLayoutType.OUTSIDEBELOW,
+			// 		}).isMandatory;
+			// } else {
 				form
 					.addField({
 						id: "upload_file_1",
@@ -179,18 +189,8 @@ define([
 					})
 					.updateLayoutType({
 						layoutType: ui.FieldLayoutType.OUTSIDEBELOW,
-					}).isMandatory;
-			} else {
-				form
-					.addField({
-						id: "upload_file_1",
-						label: "SERVICE CANCELLATION PROOF - PDF FILE ONLY",
-						type: ui.FieldType.FILE,
 					})
-					.updateLayoutType({
-						layoutType: ui.FieldLayoutType.OUTSIDEBELOW,
-					}).isMandatory = true;
-			}
+			// }
 
 			inlineHtml +=
 				'<div class="form-group container open_invoices requester_header">';
