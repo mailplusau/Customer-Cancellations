@@ -355,12 +355,14 @@ define([
 		if (isNullorEmpty($("#cancel_reason option:selected").val())) {
 			alertMessage += "Please Select Cancellation Reason</br>";
 		}
-		if (isNullorEmpty($("#cancel_notice option:selected").val())) {
+		if (isNullorEmpty(c)) {
 			alertMessage += "Please Select Cancellation Notice</br>";
 		}
 
-		if (isNullorEmpty(uploadFile)) {
-			alertMessage += "Please Upload PDF of the cancellation email. </br>";
+		if ($("#cancel_notice option:selected").val() == 14) {
+			if (isNullorEmpty(uploadFile)) {
+				alertMessage += "Please Upload PDF of the cancellation email. </br>";
+			}
 		}
 
 		if (alertMessage != "") {
@@ -427,6 +429,10 @@ define([
 			type: record.Type.CUSTOMER,
 			id: parseInt(customer),
 			isDynamic: true,
+		});
+
+		var companyName = customer_record.getValue({
+			fieldId: "companyname",
 		});
 
 		customer_record.setValue({
@@ -613,7 +619,7 @@ define([
 
 		task_record.setValue({
 			fieldId: "company",
-			value: customerInternalID,
+			value: customer,
 		});
 
 		task_record.setValue({
