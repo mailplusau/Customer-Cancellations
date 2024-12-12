@@ -613,6 +613,10 @@ define([
 		});
 
 		task_record.setValue({
+			fieldId: "startdate",
+			value: getDateStoreNS(),
+		});
+		task_record.setValue({
 			fieldId: "duedate",
 			value: getDateStoreNS(),
 		});
