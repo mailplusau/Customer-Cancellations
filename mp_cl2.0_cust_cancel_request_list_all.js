@@ -292,10 +292,11 @@ define([
 			var customerInternalId = $(this).attr("data-id");
 			var salesRecordInternalId = $(this).attr("data-salesrecord");
 
+			https://1048144.app.netsuite.com/app/site/hosting/scriptlet.nl?script=1900&deploy=1&compid=1048144&callCenter=T&customerId=1850328&salesRecordId=376845
 			var convertLink =
-				"https://1048144.app.netsuite.com/app/site/hosting/scriptlet.nl?script=740&deploy=1&compid=1048144&callcenter=T&recid=" +
+				"https://1048144.app.netsuite.com/app/site/hosting/scriptlet.nl?script=1900&deploy=1&compid=1048144&callCenter=T&customerId=" +
 				parseInt(customerInternalId) +
-				"&sales_record_id=" +
+				"&salesRecordId=" +
 				salesRecordInternalId;
 			window.location.href = convertLink;
 		});
