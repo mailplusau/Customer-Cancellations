@@ -780,6 +780,8 @@ define([
 					var cancellationDateString = "";
 				}
 
+				var clickToDialNumber = '<a href="javascript:NLDial(' + debt_row.requesterPhone + ')">' + debt_row.requesterPhone + '</a>'
+
 				debtDataSet.push([
 					linkURL,
 					customerIDLink,
@@ -789,7 +791,7 @@ define([
 					requestDateString,
 					cancellationDateString,
 					debt_row.requesterName,
-					debt_row.requesterPhone,
+					clickToDialNumber,
 					debt_row.requesterEmail,
 					debt_row.cancelOngoingText,
 				]);
@@ -899,6 +901,8 @@ define([
 					var cancellationDateString = "";
 				}
 
+				var clickToDialNumber = '<a href="javascript:NLDial(' + debt_row.requesterPhone + ')">' + debt_row.requesterPhone + '</a>'
+
 				debtDataSetServiceChange.push([
 					linkURL,
 					customerIDLink,
@@ -908,7 +912,7 @@ define([
 					requestDateString,
 					cancellationDateString,
 					debt_row.requesterName,
-					debt_row.requesterPhone,
+					clickToDialNumber,
 					debt_row.requesterEmail,
 					debt_row.cancelOngoingText,
 				]);
