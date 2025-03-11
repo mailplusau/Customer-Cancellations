@@ -181,15 +181,15 @@ define([
 			// 			layoutType: ui.FieldLayoutType.OUTSIDEBELOW,
 			// 		}).isMandatory;
 			// } else {
-				form
-					.addField({
-						id: "upload_file_1",
-						label: "SERVICE CANCELLATION PROOF - PDF FILE ONLY",
-						type: ui.FieldType.FILE,
-					})
-					.updateLayoutType({
-						layoutType: ui.FieldLayoutType.OUTSIDEBELOW,
-					})
+			form
+				.addField({
+					id: "upload_file_1",
+					label: "SERVICE CANCELLATION PROOF - PDF FILE ONLY",
+					type: ui.FieldType.FILE,
+				})
+				.updateLayoutType({
+					layoutType: ui.FieldLayoutType.OUTSIDEBELOW,
+				})
 			// }
 
 			inlineHtml +=
@@ -568,8 +568,8 @@ define([
 					body: emailBody,
 					cc: [
 						"fiona.harrison@mailplus.com.au",
-						"turkan.koc@mailplus.com.au",
-						"popie.popie@mailplus.com.au",
+						"sarah.hart@mailplus.com.au",
+						"popie.popie@mailplus.com.au", "madillon.campos@mailplus.com.au", "alexandra.bathman@mailplus.com.au", "beatriz.lima@mailplus.com.au"
 					],
 					attachments: [fileEmailAttachObj],
 					relatedRecords: {
@@ -584,8 +584,8 @@ define([
 					body: emailBody,
 					cc: [
 						"fiona.harrison@mailplus.com.au",
-						"turkan.koc@mailplus.com.au",
-						"popie.popie@mailplus.com.au",
+						"sarah.hart@mailplus.com.au",
+						"popie.popie@mailplus.com.au", "madillon.campos@mailplus.com.au", "alexandra.bathman@mailplus.com.au", "beatriz.lima@mailplus.com.au"
 					],
 					relatedRecords: {
 						entityId: parseInt(customerId),
