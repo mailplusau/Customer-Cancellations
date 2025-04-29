@@ -57,6 +57,8 @@ define([
 		zee = 425904; //test-AR
 	}
 
+	var cancellationTheme = [];
+
 	function onRequest(context) {
 		var type = "create";
 
@@ -70,6 +72,103 @@ define([
 			type = context.request.parameters.type;
 			customer_id = context.request.parameters.custid;
 			cancellationDirection = context.request.parameters.cancellationDirection;
+
+			var cancellationThemeLinkedListSearch = search.load({
+				id: "customsearch_linked_list_cancel_themes",
+				type: 'customrecord_linked_list_item',
+			});
+
+			var oldCancellationTheme = null;
+			var oldCancellationThemeText = null;
+			var cancellationWhyArray = [];
+			var cancellationWhyFilterArray = [];
+			var cancellationThemeLength = 0;
+
+			cancellationThemeLinkedListSearch.run().each(function (searchResult) {
+				var cancellationWhy = searchResult.getValue({
+					name: "internalid", //Why
+				});
+				var cancellationWhyText = searchResult.getValue({
+					name: "name", //Why
+				});
+				var cancellationWhat = searchResult.getValue({
+					name: "custrecord_1319_parent", //What
+				});
+				var cancellationWhatText = searchResult.getText({
+					name: "custrecord_1319_parent", //What
+				});
+
+				log.debug({
+					title: 'cancellationWhat',
+					details: cancellationWhat
+				})
+
+
+				// if (cancellationThemeLength == 0 || oldCancellationTheme == cancellationWhat) {
+				// 	log.debug({
+				// 		title: 'Themes match > OLD cancellationTheme',
+				// 		details: oldCancellationTheme
+				// 	})
+				cancellationWhyFilterArray[cancellationWhyFilterArray.length] = cancellationWhy;
+				cancellationWhyArray.push({
+					cancellationWhy: cancellationWhy,
+					cancellationWhyText: cancellationWhyText,
+				});
+
+				// } else
+				if (oldCancellationTheme != cancellationWhat && oldCancellationTheme != null) {
+					log.debug({
+						title: 'Themes unmatch > OLD cancellationTheme',
+						details: oldCancellationTheme
+					})
+					cancellationTheme.push({
+						cancellationWhat: oldCancellationTheme,
+						cancellationWhatText: oldCancellationThemeText,
+						cancellationWhy: cancellationWhyArray,
+					});
+					cancellationThemeLength++;
+
+					log.debug({
+						title: 'cancellationTheme',
+						details: JSON.stringify(cancellationTheme)
+					})
+
+
+					cancellationWhyArray = [];
+
+				}
+
+				oldCancellationTheme = cancellationWhat;
+				oldCancellationThemeText = cancellationWhatText;
+				return true;
+			});
+
+			log.debug({
+				title: 'cancellationTheme',
+				details: JSON.stringify(cancellationTheme)
+			})
+
+
+			var cancellationThemeLinkedListSearch = search.create({
+				type: "customrecord_linked_list_item",
+				columns: [
+					{
+						name: "name",
+					},
+					{
+						name: "internalId",
+					},
+					{
+						name: "custrecord_1319_parent",
+					},
+				],
+				filters: [["isinactive", "is", "false"], "AND", ["custrecord_1319_parent", "anyof", cancellationWhyFilterArray]],
+			});
+
+			log.debug({
+				title: 'cancellationThemeLinkedListSearch',
+				details: cancellationThemeLinkedListSearch.runPaged().count
+			})
 
 			var customer_record = record.load({
 				type: record.Type.CUSTOMER,
@@ -219,7 +318,60 @@ define([
 			inlineHtml += '<div class="row">';
 
 			inlineHtml +=
-				'<div class="col-xs-3 cancel_comp"><div class="input-group"><span class="input-group-addon" id="cancellation_in_out_bound_text">INBOUND/OUTBOUND <span class="mandatory" style="color:red">*</span></span><select id="cancellation_in_out_bound" class="form-control cancellation_in_out_bound" ><option></option>';
+				'<div class="col-xs-4 cancel_reason"><div class="input-group"><span class="input-group-addon" id="cancel_reason_text">CANCELATION REASON <span class="mandatory" style="color:red">*</span></span><select id="cancel_reason" class="form-control cancel_reason" ><option></option>';
+
+			var cancellation_reason_search = search.create({
+				type: "customlist58",
+				columns: [
+					{
+						name: "name",
+					},
+					{
+						name: "internalId",
+					},
+				],
+				filters: ["isinactive", "is", "false"],
+			});
+
+			cancellationThemeLinkedListSearch.run().each(function (searchResult) {
+				var listValue = searchResult.getValue("name");
+				var listID = searchResult.getValue("internalId");
+				var parentWhatID = searchResult.getValue("custrecord_1319_parent");
+
+				var parentThemeID = null;
+
+				for (var i = 0; i < cancellationTheme.length; i++) {
+					for (var r = 0; r < cancellationTheme[i].cancellationWhy.length; r++) {
+						if (cancellationTheme[i].cancellationWhy[r].cancellationWhy == parentWhatID) {
+							parentThemeID = cancellationTheme[i].cancellationWhat;
+							break;
+						}
+					}
+				}
+
+				inlineHtml +=
+					'<option value="' + listID + '" data-what="' + parentWhatID + '" data-theme="' + parentThemeID + '">' + listValue + "</option>";
+
+				return true;
+			});
+			inlineHtml += "</select></div></div>";
+
+			inlineHtml +=
+				'<div class="col-xs-4 cancel_what"><div class="input-group"><span class="input-group-addon" id="cancel_reason_text">CANCELATION WHAT <span class="mandatory" style="color:red">*</span></span><input id="cancel_what" value="" readonly class="form-control" type="text" data-id=""/>';
+			inlineHtml += "</div></div>";
+
+			inlineHtml +=
+				'<div class="col-xs-4 cancel_theme"><div class="input-group"><span class="input-group-addon" id="cancel_reason_text">CANCELATION THEME <span class="mandatory" style="color:red">*</span></span><input id="cancel_theme" value="" readonly class="form-control" type="text" data-id=""/>';
+			inlineHtml += "</div></div>";
+
+			inlineHtml += "</div>";
+			inlineHtml += "</div>";
+
+			inlineHtml += '<div class="form-group container cancel_reason_div ">';
+			inlineHtml += '<div class="row">';
+
+			inlineHtml +=
+				'<div class="col-xs-4 cancel_comp"><div class="input-group"><span class="input-group-addon" id="cancellation_in_out_bound_text">INBOUND/OUTBOUND <span class="mandatory" style="color:red">*</span></span><select id="cancellation_in_out_bound" class="form-control cancellation_in_out_bound" ><option></option>';
 
 			var inbound_outbound_search = search.create({
 				type: "customlist_in_outbound",
@@ -254,34 +406,10 @@ define([
 			});
 			inlineHtml += "</select></div></div>";
 
-			inlineHtml +=
-				'<div class="col-xs-3 cancel_reason"><div class="input-group"><span class="input-group-addon" id="cancel_reason_text">CANCELATION REASON <span class="mandatory" style="color:red">*</span></span><select id="cancel_reason" class="form-control cancel_reason" ><option></option>';
 
-			var industry_search = search.create({
-				type: "customlist58",
-				columns: [
-					{
-						name: "name",
-					},
-					{
-						name: "internalId",
-					},
-				],
-				filters: ["isinactive", "is", "false"],
-			});
-
-			industry_search.run().each(function (searchResult) {
-				var listValue = searchResult.getValue("name");
-				var listID = searchResult.getValue("internalId");
-				inlineHtml +=
-					'<option value="' + listID + '">' + listValue + "</option>";
-
-				return true;
-			});
-			inlineHtml += "</select></div></div>";
 
 			inlineHtml +=
-				'<div class="col-xs-3 cancel_notice"><div class="input-group"><span class="input-group-addon" id="cancel_notice_text">CANCELATION NOTICE <span class="mandatory" style="color:red">*</span></span><select id="cancel_notice" class="form-control cancel_notice" ><option></option>';
+				'<div class="col-xs-4 cancel_notice"><div class="input-group"><span class="input-group-addon" id="cancel_notice_text">CANCELATION NOTICE <span class="mandatory" style="color:red">*</span></span><select id="cancel_notice" class="form-control cancel_notice" ><option></option>';
 
 			var industry_search = search.create({
 				type: "customlist_cancellation_notice",
@@ -307,7 +435,7 @@ define([
 			inlineHtml += "</select></div></div>";
 
 			inlineHtml +=
-				'<div class="col-xs-3 cancel_comp"><div class="input-group"><span class="input-group-addon" id="cancel_comp_text">CANCELLATION COMPETITOR</span><select id="cancel_comp" class="form-control cancel_comp" ><option></option>';
+				'<div class="col-xs-4 cancel_comp"><div class="input-group"><span class="input-group-addon" id="cancel_comp_text">CANCELLATION COMPETITOR</span><select id="cancel_comp" class="form-control cancel_comp" ><option></option>';
 
 			var industry_search = search.create({
 				type: "customlist33",

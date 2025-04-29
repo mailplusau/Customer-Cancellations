@@ -56,7 +56,7 @@ define([
 		});
 
 		var app = angular.module("myApp", []);
-		app.controller("myCtrl", function ($scope) {});
+		app.controller("myCtrl", function ($scope) { });
 
 		$(document).on("change", ".input", function (e) {
 			pdffile = document.getElementsByClassName("input");
@@ -139,6 +139,43 @@ define([
 				fieldId: "partner",
 			}),
 			type: "partner",
+		});
+
+
+		$('#cancel_reason').on('change', function () {
+			var cancel_why = $(this).find('option:selected').val();
+			var cancel_what = $(this).find('option:selected').attr('data-what');
+			var cancel_theme = $(this).find('option:selected').attr('data-theme');
+
+			console.log('cancel_why: ' + cancel_why);
+			console.log('cancel_what: ' + cancel_what);
+			console.log('cancel_theme: ' + cancel_theme);
+
+			//Cancellation What
+			var cancelWhat = record.load({
+				type: 'customrecord_linked_list_item',
+				id: cancel_what,
+			});
+			var cancelWhatName = cancelWhat.getValue({
+				fieldId: "name",
+			});
+
+			$('#cancel_what').val(cancelWhatName);
+			$('#cancel_what').attr('data-id', cancel_what);
+
+			//Cancellation Theme
+			var cancelTheme = record.load({
+				type: 'customrecord_linked_list_item',
+				id: cancel_theme,
+			});
+			var cancelThemeName = cancelTheme.getValue({
+				fieldId: "name",
+			});
+
+			$('#cancel_theme').val(cancelThemeName);
+			$('#cancel_theme').attr('data-id', cancel_theme);
+
+
 		});
 	}
 
@@ -454,8 +491,22 @@ define([
 			value: $("#cancellation_in_out_bound option:selected").val(),
 		});
 
+		// customer_record.setValue({
+		// 	fieldId: "custentity_service_cancellation_reason",
+		// 	value: $("#cancel_reason option:selected").val(),
+		// });
+
+		//New Set of Cancellation Fields - Theme, What & Why
 		customer_record.setValue({
-			fieldId: "custentity_service_cancellation_reason",
+			fieldId: "custentity_service_cancellation_theme",
+			value: $('#cancel_theme').attr('data-id'),
+		});
+		customer_record.setValue({
+			fieldId: "custentity_service_cancellation_what",
+			value: $('#cancel_what').attr('data-id'),
+		});
+		customer_record.setValue({
+			fieldId: "custentity_service_cancellation_why",
 			value: $("#cancel_reason option:selected").val(),
 		});
 
@@ -777,7 +828,7 @@ define([
 
 	function arraysEqual(arr1, arr2) {
 		if (arr1.length !== arr2.length) return false;
-		for (var i = arr1.length; i--; ) {
+		for (var i = arr1.length; i--;) {
 			if (arr1[i] !== arr2[i]) return false;
 		}
 
