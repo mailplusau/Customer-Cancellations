@@ -96,6 +96,27 @@ define([
 		});
 	}
 
+	function afterSubmit() {
+		$(".instruction_div").removeClass("hide");
+		$(".requester_header").removeClass("hide");
+		$(".date_effective_section").removeClass("hide");
+		$(".cancel_reason_div").removeClass("hide");
+		$(".cancel_direction_div").removeClass("hide");
+		$(".note_section").removeClass("hide");
+		$(".loading_section").addClass("hide");
+	}
+
+	function showLoadingScreen() {
+		console.log("inside showLoadingScreen");
+		$(".instruction_div").addClass("hide");
+		$(".requester_header").addClass("hide");
+		$(".date_effective_section").addClass("hide");
+		$(".cancel_reason_div").addClass("hide");
+		$(".cancel_direction_div").addClass("hide");
+		$(".note_section").addClass("hide");
+		$(".loading_section").removeClass("hide");
+	}
+
 	function pageInit() {
 		$("#alert").hide();
 		$("#NS_MENU_ID0-item0").css("background-color", "#CFE0CE");
@@ -140,6 +161,8 @@ define([
 			}),
 			type: "partner",
 		});
+
+		afterSubmit()
 
 
 		$('#cancel_reason').on('change', function () {
@@ -321,6 +344,9 @@ define([
 
 	function saveRecord() {
 		console.log("inside save record");
+
+		showLoadingScreen();
+
 		var test_record = currentRecord.get();
 		var customer = parseInt(
 			test_record.getValue({
@@ -379,15 +405,21 @@ define([
 				dateEffectiveValueArray[0];
 			formatDate(dateEffectiveString);
 		}
+		if (isNullorEmpty($("#cancel_reason option:selected").val())) {
+			alertMessage += "Please Select Cancellation Reason</br>";
+		}
+		if (isNullorEmpty($('#cancel_theme').attr('data-id'))) {
+			alertMessage += "Cancellation Theme has not been prefilled.</br>";
+		}
+		if (isNullorEmpty($('#cancel_what').attr('data-id'))) {
+			alertMessage += "Cancellation What has not been prefilled.</br>";
+		}
 
 		if (isNullorEmpty($("#cancellation_in_out_bound option:selected").val())) {
 			alertMessage +=
 				"Please Select Cancellation Direction - Inbound or Outbound</br>";
 		}
 
-		if (isNullorEmpty($("#cancel_reason option:selected").val())) {
-			alertMessage += "Please Select Cancellation Reason</br>";
-		}
 		if (isNullorEmpty($("#cancel_notice option:selected").val())) {
 			alertMessage += "Please Select Cancellation Notice</br>";
 		}
@@ -408,6 +440,7 @@ define([
 
 		if (alertMessage != "") {
 			showAlert(alertMessage);
+			afterSubmit();
 			return false;
 		}
 

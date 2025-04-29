@@ -257,11 +257,13 @@ define([
 			inlineHtml +=
 				"<style>.mandatory{color:red;} .body{background-color: #CFE0CE !important;}.wrapper{position:fixed;height:2em;width:2em;overflow:show;margin:auto;top:0;left:0;bottom:0;right:0;justify-content: center; align-items: center; display: -webkit-inline-box;} .ball{width: 22px; height: 22px; border-radius: 11px; margin: 0 10px; animation: 2s bounce ease infinite;} .blue{background-color: #0f3d39; }.red{background-color: #095C7B; animation-delay: .25s;}.yellow{background-color: #387081; animation-delay: .5s}.green{background-color: #d0e0cf; animation-delay: .75s}@keyframes bounce{50%{transform: translateY(25px);}}.select2-selection__choice{ background-color: #095C7B !important; color: white !important}.select2-selection__choice__remove{color: red !important;}</style>";
 
-			inlineHtml +=
-				'<div class="container" style="padding-top: 3%;"><div id="alert" class="alert alert-danger fade in"></div></div>';
+			inlineHtml += loadingSection();
 
 			inlineHtml +=
-				'<div class="container instruction_div " style="background-color: #d9f2ff;font-size: 14px;padding: 15px;border-radius: 10px;border: 1px solid;box-shadow: 0px 1px 26px -10px white;"><b>Purpose</b>:</br>This page is used to record the cancellation of a customer account.  All fields marked with an asterisk (*) are mandatory.</br><ul><li><b>DATE EFFECTIVE</b>: Date the cancellation takes effect</li><li><b>CANCELLATION REASON</b>: Select from a dropdown list of predefined reasons</li><li><b>CANCELLATION NOTICE</b>: How was Head Office notified of the cancellation?</li><li><b>INBOUND/OUTBOUND</b>:<ul><li>Inbound: Customer initiated the cancellation </li><li>Outbound: Head office initiated the cancellation</li></ul></li><li><b>NOTES</b>: Optional field for any additional information relevant to the cancellation, such as specific details about the reason, customer feedback, or actions taken.</li></ul></div></br>';
+				'<div class="container" style="padding-top: 3%;"><div id="alert" class="alert alert-danger fade in "></div></div>';
+
+			inlineHtml +=
+				'<div class="container instruction_div hide" style="background-color: #d9f2ff;font-size: 14px;padding: 15px;border-radius: 10px;border: 1px solid;box-shadow: 0px 1px 26px -10px white;"><b>Purpose</b>:</br>This page is used to record the cancellation of a customer account.  All fields marked with an asterisk (*) are mandatory.</br><ul><li><b>DATE EFFECTIVE</b>: Date the cancellation takes effect</li><li><b>CANCELLATION REASON</b>: Select from a dropdown list of predefined reasons</li><li><b>CANCELATION WHAT/THEME</b>: The Cancellation Theme and What will be preselecetd based on the cancellation reason selected.</li><li><b>CANCELLATION NOTICE</b>: How was Head Office notified of the cancellation?</li><li><b>INBOUND/OUTBOUND</b>:<ul><li>Inbound: Customer initiated the cancellation </li><li>Outbound: Head office initiated the cancellation</li></ul></li><li><b>NOTES</b>: Optional field for any additional information relevant to the cancellation, such as specific details about the reason, customer feedback, or actions taken.</li></ul></div></br>';
 
 			// Load DataTables
 			inlineHtml +=
@@ -292,7 +294,7 @@ define([
 			// }
 
 			inlineHtml +=
-				'<div class="form-group container open_invoices requester_header">';
+				'<div class="form-group container open_invoices requester_header hide">';
 			inlineHtml += '<div class="row">';
 			inlineHtml += '<div class="col-xs-12 heading2">';
 			inlineHtml +=
@@ -301,7 +303,7 @@ define([
 			inlineHtml += "</div>";
 			inlineHtml += "</div>";
 
-			inlineHtml += '<div class="form-group container date_effective_section">';
+			inlineHtml += '<div class="form-group container date_effective_section hide">';
 			inlineHtml += '<div class="row">';
 
 			inlineHtml +=
@@ -314,7 +316,7 @@ define([
 			inlineHtml += "</div>";
 			inlineHtml += "</div>";
 
-			inlineHtml += '<div class="form-group container cancel_reason_div ">';
+			inlineHtml += '<div class="form-group container cancel_reason_div hide">';
 			inlineHtml += '<div class="row">';
 
 			inlineHtml +=
@@ -367,7 +369,7 @@ define([
 			inlineHtml += "</div>";
 			inlineHtml += "</div>";
 
-			inlineHtml += '<div class="form-group container cancel_reason_div ">';
+			inlineHtml += '<div class="form-group container cancel_direction_div hide">';
 			inlineHtml += '<div class="row">';
 
 			inlineHtml +=
@@ -462,7 +464,7 @@ define([
 			inlineHtml += "</div>";
 			inlineHtml += "</div>";
 
-			inlineHtml += '<div class="form-group container note_section">';
+			inlineHtml += '<div class="form-group container note_section hide">';
 			inlineHtml += '<div class="row">';
 			inlineHtml +=
 				'<div class="col-xs-12 note"><div class="input-group"><span class="input-group-addon" id="note_text">NOTE </span><textarea id="note" class="form-control note" rows="4" cols="50"  /></textarea></div></div>';
@@ -727,6 +729,28 @@ define([
 				id: parseInt(customerId),
 			});
 		}
+	}
+
+	/**
+ * The header showing that the results are loading.
+ * @returns {String} `inlineQty`
+ */
+	function loadingSection() {
+		var inlineHtml =
+			'<div class="wrapper loading_section" style="height: 10em !important;left: 50px !important">';
+		inlineHtml += '<div class="row">';
+		inlineHtml += '<div class="col-xs-12 ">';
+		inlineHtml += '<h1 style="color: #095C7B;">Loading</h1>';
+		inlineHtml += "</div></div></div></br></br>";
+		inlineHtml += '<div class="wrapper loading_section">';
+		inlineHtml += '<div class="blue ball"></div>';
+		inlineHtml += '<div class="red ball"></div>';
+		inlineHtml += '<div class="yellow ball"></div>';
+		inlineHtml += '<div class="green ball"></div>';
+
+		inlineHtml += "</div>";
+
+		return inlineHtml;
 	}
 
 	/**
