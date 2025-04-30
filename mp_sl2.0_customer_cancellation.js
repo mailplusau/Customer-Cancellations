@@ -109,11 +109,7 @@ define([
 				// 		title: 'Themes match > OLD cancellationTheme',
 				// 		details: oldCancellationTheme
 				// 	})
-				cancellationWhyFilterArray[cancellationWhyFilterArray.length] = cancellationWhy;
-				cancellationWhyArray.push({
-					cancellationWhy: cancellationWhy,
-					cancellationWhyText: cancellationWhyText,
-				});
+
 
 				// } else
 				if (oldCancellationTheme != cancellationWhat && oldCancellationTheme != null) {
@@ -137,6 +133,12 @@ define([
 					cancellationWhyArray = [];
 
 				}
+
+				cancellationWhyFilterArray[cancellationWhyFilterArray.length] = cancellationWhy;
+				cancellationWhyArray.push({
+					cancellationWhy: cancellationWhy,
+					cancellationWhyText: cancellationWhyText,
+				});
 
 				oldCancellationTheme = cancellationWhat;
 				oldCancellationThemeText = cancellationWhatText;
