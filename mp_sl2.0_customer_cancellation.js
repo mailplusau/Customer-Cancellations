@@ -84,6 +84,8 @@ define([
 			var cancellationWhyFilterArray = [];
 			var cancellationThemeLength = 0;
 
+			var cancellationThemeLinkedCount = 0
+
 			cancellationThemeLinkedListSearch.run().each(function (searchResult) {
 				var cancellationWhy = searchResult.getValue({
 					name: "internalid", //Why
@@ -142,9 +144,18 @@ define([
 
 				oldCancellationTheme = cancellationWhat;
 				oldCancellationThemeText = cancellationWhatText;
+				cancellationThemeLinkedCount++;
 				return true;
 			});
 
+			if (cancellationThemeLinkedCount > 0) {
+				cancellationTheme.push({
+					cancellationWhat: oldCancellationTheme,
+					cancellationWhatText: oldCancellationThemeText,
+					cancellationWhy: cancellationWhyArray,
+				});
+				cancellationThemeLength++;
+			}
 			log.debug({
 				title: 'cancellationTheme',
 				details: JSON.stringify(cancellationTheme)
