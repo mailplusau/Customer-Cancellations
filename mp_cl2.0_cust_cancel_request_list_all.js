@@ -567,28 +567,28 @@ define([
 			.each(function (custListCancellationRequestSearchResultSet) {
 				var custInternalID =
 					custListCancellationRequestSearchResultSet.getValue({
-						name: "internalid",
+						name: "internalid", summary: "GROUP",
 					});
 				var custEntityID = custListCancellationRequestSearchResultSet.getValue({
-					name: "entityid",
+					name: "entityid", summary: "GROUP",
 				});
 				var custName = custListCancellationRequestSearchResultSet.getValue({
-					name: "companyname",
+					name: "companyname", summary: "GROUP",
 				});
 				var zeeID = custListCancellationRequestSearchResultSet.getValue({
-					name: "partner",
+					name: "partner", summary: "GROUP",
 				});
 				var zeeName = custListCancellationRequestSearchResultSet.getText({
-					name: "partner",
+					name: "partner", summary: "GROUP",
 				});
 
 				var statusText = custListCancellationRequestSearchResultSet.getText({
-					name: "entitystatus",
+					name: "entitystatus", summary: "GROUP",
 				});
 
 				var serviceCancellationRequestedDate =
 					custListCancellationRequestSearchResultSet.getValue({
-						name: "custentity_cancellation_requested_date",
+						name: "custentity_cancellation_requested_date", summary: "GROUP",
 					});
 				if (isNullorEmpty(serviceCancellationRequestedDate)) {
 					serviceCancellationRequestedDate = "";
@@ -596,37 +596,45 @@ define([
 
 				var serviceCancellationDate =
 					custListCancellationRequestSearchResultSet.getValue({
-						name: "custentity13",
+						name: "custentity13", summary: "GROUP",
 					});
 				if (isNullorEmpty(serviceCancellationDate)) {
 					serviceCancellationDate = "";
 				}
 				var requesterName = custListCancellationRequestSearchResultSet.getValue(
 					{
-						name: "custentity_hc_mailcon_name",
+						name: "custentity_hc_mailcon_name", summary: "GROUP",
 					}
 				);
 				var requesterPhone =
 					custListCancellationRequestSearchResultSet.getValue({
-						name: "custentity_hc_mailcon_phone",
+						name: "custentity_hc_mailcon_phone", summary: "GROUP",
 					});
 				var requesterEmail =
 					custListCancellationRequestSearchResultSet.getValue({
-						name: "custentity_hc_mailcon_email",
+						name: "custentity_hc_mailcon_email", summary: "GROUP",
 					});
 				var cancelOngoingText =
 					custListCancellationRequestSearchResultSet.getText({
-						name: "custentity_cancel_ongoing",
+						name: "custentity_cancel_ongoing", summary: "GROUP",
 					});
 
 				var cancellationRequested =
 					custListCancellationRequestSearchResultSet.getValue({
-						name: "custentity_cancellation_requested",
+						name: "custentity_cancellation_requested", summary: "GROUP",
 					});
 
 				var serviceChangeType =
 					custListCancellationRequestSearchResultSet.getValue({
-						name: "custentity_cust_service_change_type",
+						name: "custentity_cust_service_change_type", summary: "GROUP",
+					});
+
+				var salesRecordMaxInternalID =
+					custListCancellationRequestSearchResultSet.getValue({
+						name: "internalid",
+						join: "CUSTRECORD_SALES_CUSTOMER",
+						summary: "MAX",
+
 					});
 
 				console.log('custInternalID: ' + custInternalID);
@@ -648,6 +656,7 @@ define([
 						requesterName: requesterName,
 						requesterPhone: requesterPhone,
 						requesterEmail: requesterEmail,
+						salesRecordMaxInternalID: salesRecordMaxInternalID
 					});
 				} else {
 					debt_setServiceChange.push({
@@ -663,6 +672,7 @@ define([
 						requesterName: requesterName,
 						requesterPhone: requesterPhone,
 						requesterEmail: requesterEmail,
+						salesRecordMaxInternalID: salesRecordMaxInternalID
 					});
 				}
 
@@ -685,26 +695,26 @@ define([
 		if (!isNullorEmpty(debt_rows)) {
 			debt_rows.forEach(function (debt_row, index) {
 				//Sales Record - In Use
-				var salesRecordsActiveSearch = search.load({
-					type: "customrecord_sales",
-					id: "customsearch_active_sales_record",
-				});
+				// var salesRecordsActiveSearch = search.load({
+				// 	type: "customrecord_sales",
+				// 	id: "customsearch_active_sales_record",
+				// });
 
-				salesRecordsActiveSearch.filters.push(
-					search.createFilter({
-						name: "internalid",
-						join: "custrecord_sales_customer",
-						operator: search.Operator.ANYOF,
-						values: debt_row.custInternalID,
-					})
-				);
+				// salesRecordsActiveSearch.filters.push(
+				// 	search.createFilter({
+				// 		name: "internalid",
+				// 		join: "custrecord_sales_customer",
+				// 		operator: search.Operator.ANYOF,
+				// 		values: debt_row.custInternalID,
+				// 	})
+				// );
 
-				var resultRange = salesRecordsActiveSearch.run().getRange({
-					start: 0,
-					end: 1,
-				});
+				// var resultRange = salesRecordsActiveSearch.run().getRange({
+				// 	start: 0,
+				// 	end: 1,
+				// });
 
-				if (resultRange.length == 0) {
+				if (isNullorEmpty(debt_row.salesRecordMaxInternalID)) {
 					var linkURL =
 						'<input type="button" id="" data-id="' +
 						debt_row.custInternalID +
@@ -712,21 +722,21 @@ define([
 						debt_row.custInternalID +
 						'" value="CANCEL" class="form-control btn btn-xs btn-danger notifyitteam" style="font-weight: bold;cursor: pointer !important;width: fit-content;" />';
 				} else {
-					var salesRecordInternalId = null;
-					for (var i = 0; i < resultRange.length; i++) {
-						salesRecordInternalId = resultRange[i].getValue({
-							name: "internalid",
-						});
+					var salesRecordInternalId = debt_row.salesRecordMaxInternalID;
+					// for (var i = 0; i < resultRange.length; i++) {
+					// salesRecordInternalId = resultRange[i].getValue({
+					// 	name: "internalid",
+					// });
 
-						var linkURL =
-							'<input type="button" id="" data-id="' +
-							debt_row.custInternalID +
-							'" data-salesrecord="' +
-							salesRecordInternalId +
-							'" value="VIEW" class="form-control btn btn-xs btn-primary viewcustomer" style="font-weight: bold; cursor: pointer !important;width: fit-content;" />     <input type="button" id="" data-id="' +
-							debt_row.custInternalID +
-							'" value="CANCEL" class="form-control btn btn-xs btn-danger notifyitteam" style="font-weight: bold;cursor: pointer !important;width: fit-content;" />';
-					}
+					var linkURL =
+						'<input type="button" id="" data-id="' +
+						debt_row.custInternalID +
+						'" data-salesrecord="' +
+						salesRecordInternalId +
+						'" value="VIEW" class="form-control btn btn-xs btn-primary viewcustomer" style="font-weight: bold; cursor: pointer !important;width: fit-content;" />     <input type="button" id="" data-id="' +
+						debt_row.custInternalID +
+						'" value="CANCEL" class="form-control btn btn-xs btn-danger notifyitteam" style="font-weight: bold;cursor: pointer !important;width: fit-content;" />';
+					// }
 				}
 
 				var customerIDLink =
@@ -806,26 +816,26 @@ define([
 		if (!isNullorEmpty(debt_rows_service_change)) {
 			debt_rows_service_change.forEach(function (debt_row, index) {
 				//Sales Record - In Use
-				var salesRecordsActiveSearch = search.load({
-					type: "customrecord_sales",
-					id: "customsearch_active_sales_record",
-				});
+				// var salesRecordsActiveSearch = search.load({
+				// 	type: "customrecord_sales",
+				// 	id: "customsearch_active_sales_record",
+				// });
 
-				salesRecordsActiveSearch.filters.push(
-					search.createFilter({
-						name: "internalid",
-						join: "custrecord_sales_customer",
-						operator: search.Operator.ANYOF,
-						values: debt_row.custInternalID,
-					})
-				);
+				// salesRecordsActiveSearch.filters.push(
+				// 	search.createFilter({
+				// 		name: "internalid",
+				// 		join: "custrecord_sales_customer",
+				// 		operator: search.Operator.ANYOF,
+				// 		values: debt_row.custInternalID,
+				// 	})
+				// );
 
-				var resultRange = salesRecordsActiveSearch.run().getRange({
-					start: 0,
-					end: 1,
-				});
+				// var resultRange = salesRecordsActiveSearch.run().getRange({
+				// 	start: 0,
+				// 	end: 1,
+				// });
 
-				if (resultRange.length == 0) {
+				if (isNullorEmpty(debt_row.salesRecordMaxInternalID)) {
 					var linkURL =
 						'<input type="button" id="" data-id="' +
 						debt_row.custInternalID +
@@ -833,21 +843,20 @@ define([
 						debt_row.custInternalID +
 						'" value="CANCEL" class="form-control btn btn-xs btn-danger notifyitteam" style="font-weight: bold;cursor: pointer !important;width: fit-content;" />';
 				} else {
-					var salesRecordInternalId = null;
-					for (var i = 0; i < resultRange.length; i++) {
-						salesRecordInternalId = resultRange[i].getValue({
-							name: "internalid",
-						});
+					var salesRecordInternalId = debt_row.salesRecordMaxInternalID;
+					// for (var i = 0; i < resultRange.length; i++) {
+					// salesRecordInternalId = resultRange[i].getValue({
+					// 	name: "internalid",
+					// });
 
-						var linkURL =
-							'<input type="button" id="" data-id="' +
-							debt_row.custInternalID +
-							'" data-salesrecord="' +
-							salesRecordInternalId +
-							'" value="VIEW" class="form-control btn btn-xs btn-primary viewcustomer" style="font-weight: bold; cursor: pointer !important;width: fit-content;" />     <input type="button" id="" data-id="' +
-							debt_row.custInternalID +
-							'" value="CANCEL" class="form-control btn btn-xs btn-danger notifyitteam" style="font-weight: bold;cursor: pointer !important;width: fit-content;" />';
-					}
+					var linkURL =
+						'<input type="button" id="" data-id="' +
+						debt_row.custInternalID +
+						'" data-salesrecord="' +
+						salesRecordInternalId +
+						'" value="VIEW" class="form-control btn btn-xs btn-primary viewcustomer" style="font-weight: bold; cursor: pointer !important;width: fit-content;" />     <input type="button" id="" data-id="' +
+						debt_row.custInternalID +
+						'" value="CANCEL" class="form-control btn btn-xs btn-danger notifyitteam" style="font-weight: bold;cursor: pointer !important;width: fit-content;" />';
 				}
 
 				var customerIDLink =
