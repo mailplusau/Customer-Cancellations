@@ -415,27 +415,28 @@ define([
 			alertMessage += "Cancellation What has not been prefilled.</br>";
 		}
 
-		if (isNullorEmpty($("#cancellation_in_out_bound option:selected").val())) {
-			alertMessage +=
-				"Please Select Cancellation Direction - Inbound or Outbound</br>";
+		if (customer_status == 13) {
+			if (isNullorEmpty($("#cancellation_in_out_bound option:selected").val())) {
+				alertMessage +=
+					"Please Select Cancellation Direction - Inbound or Outbound</br>";
+			}
+
+			if (isNullorEmpty($("#cancel_notice option:selected").val())) {
+				alertMessage += "Please Select Cancellation Notice</br>";
+			}
+
+			var uploadFile = test_record.getValue({
+				fieldId: "upload_file_1",
+			});
+
+			console.log(uploadFile);
+
+			// if ($("#cancel_notice option:selected").val() != 14) {
+			// 	if (isNullorEmpty(uploadFile)) {
+			// 		alertMessage += "Please Upload PDF of the cancellation email. </br>";
+			// 	}
+			// }
 		}
-
-		if (isNullorEmpty($("#cancel_notice option:selected").val())) {
-			alertMessage += "Please Select Cancellation Notice</br>";
-		}
-
-		var uploadFile = test_record.getValue({
-			fieldId: "upload_file_1",
-		});
-
-		console.log(uploadFile);
-
-		// if ($("#cancel_notice option:selected").val() != 14) {
-		// 	if (isNullorEmpty(uploadFile)) {
-		// 		alertMessage += "Please Upload PDF of the cancellation email. </br>";
-		// 	}
-		// }
-
 		console.log("Validation complete");
 
 		if (alertMessage != "") {
@@ -565,78 +566,80 @@ define([
 
 		customer_record.save();
 
-		var phoneCallRecord = record.create({
-			type: record.Type.PHONE_CALL,
-			isDynamic: true,
-		});
-
-		phoneCallRecord.setValue({
-			fieldId: "company",
-			value: parseInt(customer),
-		});
-
-		phoneCallRecord.setValue({
-			fieldId: "startdate",
-			value: getDateStoreNS(),
-		});
-
-		phoneCallRecord.setValue({
-			fieldId: "custevent_organiser",
-			value: runtime.getCurrentUser().id,
-		});
-
-		phoneCallRecord.setValue({
-			fieldId: "custevent_call_type",
-			value: 2,
-		});
-
-		phoneCallRecord.setValue({
-			fieldId: "title",
-			value: "Cancellation",
-		});
-
-		phoneCallRecord.setValue({
-			fieldId: "assigned",
-			value: partner,
-		});
-
-		phoneCallRecord.setValue({
-			fieldId: "status",
-			value: "COMPLETE",
-		});
-
-		var phoneCallRecordId = phoneCallRecord.save();
-
-		commRegSearch = search.load({
-			id: "customsearch_comm_reg_signed",
-		});
-
-		commRegSearch.filters.push(
-			search.createFilter({
-				name: "custrecord_customer",
-				operator: search.Operator.IS,
-				values: parseInt(customer),
-			})
-		);
-
-		commRegSearch.run().each(function (searchResult) {
-			var commRegID = searchResult.getValue({
-				name: "internalid",
-			});
-			var commRegRecord = record.load({
-				type: "customrecord_commencement_register",
-				id: commRegID,
+		if (customer_status == 13) {
+			var phoneCallRecord = record.create({
+				type: record.Type.PHONE_CALL,
+				isDynamic: true,
 			});
 
-			commRegRecord.setValue({
-				fieldId: "custrecord_trial_status",
-				value: 3,
+			phoneCallRecord.setValue({
+				fieldId: "company",
+				value: parseInt(customer),
 			});
 
-			var commRegRecordId = commRegRecord.save();
+			phoneCallRecord.setValue({
+				fieldId: "startdate",
+				value: getDateStoreNS(),
+			});
 
-			return true;
-		});
+			phoneCallRecord.setValue({
+				fieldId: "custevent_organiser",
+				value: runtime.getCurrentUser().id,
+			});
+
+			phoneCallRecord.setValue({
+				fieldId: "custevent_call_type",
+				value: 2,
+			});
+
+			phoneCallRecord.setValue({
+				fieldId: "title",
+				value: "Cancellation",
+			});
+
+			phoneCallRecord.setValue({
+				fieldId: "assigned",
+				value: partner,
+			});
+
+			phoneCallRecord.setValue({
+				fieldId: "status",
+				value: "COMPLETE",
+			});
+
+			var phoneCallRecordId = phoneCallRecord.save();
+
+			commRegSearch = search.load({
+				id: "customsearch_comm_reg_signed",
+			});
+
+			commRegSearch.filters.push(
+				search.createFilter({
+					name: "custrecord_customer",
+					operator: search.Operator.IS,
+					values: parseInt(customer),
+				})
+			);
+
+			commRegSearch.run().each(function (searchResult) {
+				var commRegID = searchResult.getValue({
+					name: "internalid",
+				});
+				var commRegRecord = record.load({
+					type: "customrecord_commencement_register",
+					id: commRegID,
+				});
+
+				commRegRecord.setValue({
+					fieldId: "custrecord_trial_status",
+					value: 3,
+				});
+
+				var commRegRecordId = commRegRecord.save();
+
+				return true;
+			});
+		}
 
 		var userNoteRecord = record.create({
 			type: record.Type.NOTE,
@@ -696,59 +699,61 @@ define([
 		});
 		endDate.setHours(startDate.getHours(), startDate.getMinutes() + 15, 0, 0);
 
-		var task_record = record.create({
-			type: "task",
-		});
+		if (customer_status == 13) {
+			var task_record = record.create({
+				type: "task",
+			});
 
-		task_record.setValue({
-			fieldId: "startdate",
-			value: getDateStoreNS(),
-		});
-		task_record.setValue({
-			fieldId: "duedate",
-			value: getDateStoreNS(),
-		});
+			task_record.setValue({
+				fieldId: "startdate",
+				value: getDateStoreNS(),
+			});
+			task_record.setValue({
+				fieldId: "duedate",
+				value: getDateStoreNS(),
+			});
 
-		task_record.setValue({
-			fieldId: "company",
-			value: customer,
-		});
+			task_record.setValue({
+				fieldId: "company",
+				value: customer,
+			});
 
-		task_record.setValue({
-			fieldId: "timedevent",
-			value: true,
-		});
+			task_record.setValue({
+				fieldId: "timedevent",
+				value: true,
+			});
 
-		task_record.setValue({
-			fieldId: "starttime",
-			value: startDate,
-		});
-		task_record.setValue({
-			fieldId: "endtime",
-			value: endDate,
-		});
+			task_record.setValue({
+				fieldId: "starttime",
+				value: startDate,
+			});
+			task_record.setValue({
+				fieldId: "endtime",
+				value: endDate,
+			});
 
-		task_record.setValue({
-			fieldId: "title",
-			value: "Cancellation Processed - " + companyName,
-		});
+			task_record.setValue({
+				fieldId: "title",
+				value: "Cancellation Processed - " + companyName,
+			});
 
-		task_record.setValue({
-			fieldId: "custevent_organiser",
-			value: runtime.getCurrentUser().id,
-		});
-		task_record.setValue({
-			fieldId: "assigned",
-			value: runtime.getCurrentUser().id,
-		});
-		task_record.setValue({
-			fieldId: "status",
-			value: "COMPLETE",
-		});
+			task_record.setValue({
+				fieldId: "custevent_organiser",
+				value: runtime.getCurrentUser().id,
+			});
+			task_record.setValue({
+				fieldId: "assigned",
+				value: runtime.getCurrentUser().id,
+			});
+			task_record.setValue({
+				fieldId: "status",
+				value: "COMPLETE",
+			});
 
-		task_record.save({
-			ignoreMandatoryFields: true,
-		});
+			task_record.save({
+				ignoreMandatoryFields: true,
+			});
+		}
 
 		return true;
 	}

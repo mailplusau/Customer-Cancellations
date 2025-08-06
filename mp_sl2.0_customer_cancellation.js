@@ -68,6 +68,7 @@ define([
 			var entityid;
 			var companyName = "";
 			var cancellationDirection = "";
+			var customer_status_id = null;
 
 			type = context.request.parameters.type;
 			customer_id = context.request.parameters.custid;
@@ -196,22 +197,40 @@ define([
 			companyName = customer_record.getValue({
 				fieldId: "companyname",
 			});
+			//Customer Status
+			customer_status_id = customer_record.getValue({
+				fieldId: "entitystatus",
+			});
 
 			zee = customer_record.getValue({
 				fieldId: "partner",
 			});
 
-			var form = ui.createForm({
-				title:
-					'Customer Cancellation: <a href="' +
-					baseURL +
-					"/app/common/entity/custjob.nl?id=" +
-					customer_id +
-					'">' +
-					entityid +
-					"</a> " +
-					companyName,
-			});
+			if (customer_status_id == 13) {
+				var form = ui.createForm({
+					title:
+						'Customer Cancellation: <a href="' +
+						baseURL +
+						"/app/common/entity/custjob.nl?id=" +
+						customer_id +
+						'">' +
+						entityid +
+						"</a> " +
+						companyName,
+				});
+			} else {
+				var form = ui.createForm({
+					title:
+						'Lead Cancellation: <a href="' +
+						baseURL +
+						"/app/common/entity/custjob.nl?id=" +
+						customer_id +
+						'">' +
+						entityid +
+						"</a> " +
+						companyName,
+				});
+			}
 
 			if (!isNullorEmpty(zee)) {
 				var zeeRecord = record.load({
@@ -236,10 +255,7 @@ define([
 					fieldId: "custentity_abn_franchiserecord",
 				});
 			}
-			//Customer Status
-			customer_status_id = customer_record.getValue({
-				fieldId: "entitystatus",
-			});
+
 			var cancellation_notice = customer_record.getValue({
 				fieldId: "custentity_service_cancellation_notice",
 			});
@@ -295,15 +311,17 @@ define([
 			// 			layoutType: ui.FieldLayoutType.OUTSIDEBELOW,
 			// 		}).isMandatory;
 			// } else {
-			form
-				.addField({
-					id: "upload_file_1",
-					label: "SERVICE CANCELLATION PROOF - PDF FILE ONLY",
-					type: ui.FieldType.FILE,
-				})
-				.updateLayoutType({
-					layoutType: ui.FieldLayoutType.OUTSIDEBELOW,
-				})
+			if (customer_status_id == 13) {
+				form
+					.addField({
+						id: "upload_file_1",
+						label: "SERVICE CANCELLATION PROOF - PDF FILE ONLY",
+						type: ui.FieldType.FILE,
+					})
+					.updateLayoutType({
+						layoutType: ui.FieldLayoutType.OUTSIDEBELOW,
+					})
+			}
 			// }
 
 			inlineHtml +=
@@ -382,101 +400,106 @@ define([
 			inlineHtml += "</div>";
 			inlineHtml += "</div>";
 
-			inlineHtml += '<div class="form-group container cancel_direction_div hide">';
-			inlineHtml += '<div class="row">';
+			if (customer_status_id == 13) {
+				inlineHtml += '<div class="form-group container cancel_direction_div hide">';
+				inlineHtml += '<div class="row">';
 
-			inlineHtml +=
-				'<div class="col-xs-4 cancel_comp"><div class="input-group"><span class="input-group-addon" id="cancellation_in_out_bound_text">INBOUND/OUTBOUND <span class="mandatory" style="color:red">*</span></span><select id="cancellation_in_out_bound" class="form-control cancellation_in_out_bound" ><option></option>';
+				inlineHtml +=
+					'<div class="col-xs-4 cancel_comp"><div class="input-group"><span class="input-group-addon" id="cancellation_in_out_bound_text">INBOUND/OUTBOUND <span class="mandatory" style="color:red">*</span></span><select id="cancellation_in_out_bound" class="form-control cancellation_in_out_bound" ><option></option>';
 
-			var inbound_outbound_search = search.create({
-				type: "customlist_in_outbound",
-				columns: [
-					{
-						name: "name",
-					},
-					{
-						name: "internalId",
-					},
-				],
-				filters: ["isinactive", "is", "false"],
-			});
 
-			inbound_outbound_search.run().each(function (searchResult) {
-				var listValue = searchResult.getValue("name");
-				var listID = searchResult.getValue("internalId");
+				var inbound_outbound_search = search.create({
+					type: "customlist_in_outbound",
+					columns: [
+						{
+							name: "name",
+						},
+						{
+							name: "internalId",
+						},
+					],
+					filters: ["isinactive", "is", "false"],
+				});
 
-				if (cancellationDirection == listID) {
-					inlineHtml +=
-						'<option value="' +
-						listID +
-						'" selected>' +
-						listValue +
-						"</option>";
-				} else {
+				inbound_outbound_search.run().each(function (searchResult) {
+					var listValue = searchResult.getValue("name");
+					var listID = searchResult.getValue("internalId");
+
+
+					if (cancellationDirection == listID) {
+						inlineHtml +=
+							'<option value="' +
+							listID +
+							'" selected>' +
+							listValue +
+							"</option>";
+					} else {
+						inlineHtml +=
+							'<option value="' + listID + '">' + listValue + "</option>";
+					}
+
+
+					return true;
+				});
+
+				inlineHtml += "</select></div></div>";
+
+
+
+				inlineHtml +=
+					'<div class="col-xs-4 cancel_notice"><div class="input-group"><span class="input-group-addon" id="cancel_notice_text">CANCELATION NOTICE <span class="mandatory" style="color:red">*</span></span><select id="cancel_notice" class="form-control cancel_notice" ><option></option>';
+
+				var industry_search = search.create({
+					type: "customlist_cancellation_notice",
+					columns: [
+						{
+							name: "name",
+						},
+						{
+							name: "internalId",
+						},
+					],
+					filters: ["isinactive", "is", "false"],
+				});
+
+				industry_search.run().each(function (searchResult) {
+					var listValue = searchResult.getValue("name");
+					var listID = searchResult.getValue("internalId");
 					inlineHtml +=
 						'<option value="' + listID + '">' + listValue + "</option>";
-				}
 
-				return true;
-			});
-			inlineHtml += "</select></div></div>";
+					return true;
+				});
+				inlineHtml += "</select></div></div>";
 
-
-
-			inlineHtml +=
-				'<div class="col-xs-4 cancel_notice"><div class="input-group"><span class="input-group-addon" id="cancel_notice_text">CANCELATION NOTICE <span class="mandatory" style="color:red">*</span></span><select id="cancel_notice" class="form-control cancel_notice" ><option></option>';
-
-			var industry_search = search.create({
-				type: "customlist_cancellation_notice",
-				columns: [
-					{
-						name: "name",
-					},
-					{
-						name: "internalId",
-					},
-				],
-				filters: ["isinactive", "is", "false"],
-			});
-
-			industry_search.run().each(function (searchResult) {
-				var listValue = searchResult.getValue("name");
-				var listID = searchResult.getValue("internalId");
 				inlineHtml +=
-					'<option value="' + listID + '">' + listValue + "</option>";
+					'<div class="col-xs-4 cancel_comp"><div class="input-group"><span class="input-group-addon" id="cancel_comp_text">CANCELLATION COMPETITOR</span><select id="cancel_comp" class="form-control cancel_comp" ><option></option>';
 
-				return true;
-			});
-			inlineHtml += "</select></div></div>";
+				var industry_search = search.create({
+					type: "customlist33",
+					columns: [
+						{
+							name: "name",
+						},
+						{
+							name: "internalId",
+						},
+					],
+					filters: ["isinactive", "is", "false"],
+				});
 
-			inlineHtml +=
-				'<div class="col-xs-4 cancel_comp"><div class="input-group"><span class="input-group-addon" id="cancel_comp_text">CANCELLATION COMPETITOR</span><select id="cancel_comp" class="form-control cancel_comp" ><option></option>';
+				industry_search.run().each(function (searchResult) {
+					var listValue = searchResult.getValue("name");
+					var listID = searchResult.getValue("internalId");
+					inlineHtml +=
+						'<option value="' + listID + '">' + listValue + "</option>";
 
-			var industry_search = search.create({
-				type: "customlist33",
-				columns: [
-					{
-						name: "name",
-					},
-					{
-						name: "internalId",
-					},
-				],
-				filters: ["isinactive", "is", "false"],
-			});
-
-			industry_search.run().each(function (searchResult) {
-				var listValue = searchResult.getValue("name");
-				var listID = searchResult.getValue("internalId");
-				inlineHtml +=
-					'<option value="' + listID + '">' + listValue + "</option>";
-
-				return true;
-			});
-			inlineHtml += "</select></div></div>";
-			inlineHtml += "</div>";
-			inlineHtml += "</div>";
-
+					return true;
+				});
+				inlineHtml += "</select></div></div>";
+				inlineHtml += "</div>";
+				inlineHtml += "</div>";
+			}
 			inlineHtml += '<div class="form-group container note_section hide">';
 			inlineHtml += '<div class="row">';
 			inlineHtml +=
@@ -611,55 +634,67 @@ define([
 				details: customerId,
 			});
 
-			var proofid = null;
-
-			if (!isNullorEmpty(fileObj)) {
-				fileObj.folder = 3630868;
-				var file_type = fileObj.fileType;
-				if (file_type == "PDF") {
-					file_type == "pdf";
-					var file_name =
-						getDatePDF() + "_" + parseInt(customerId) + "." + file_type;
-					var file_name =
-						getDatePDF() +
-						"_service_change_notification_" +
-						parseInt(customerId) +
-						"." +
-						file_type;
-				}
-				fileObj.name = file_name;
-
-				if (file_type == "PDF") {
-					// Create file and upload it to the file cabinet.
-					proofid = fileObj.save();
-				} else {
-					error.create({
-						message: "Must be in PDF format",
-						name: "PDF_ERROR",
-						notifyOff: true,
-					});
-				}
-			}
-
 			var customer_record = record.load({
 				type: record.Type.CUSTOMER,
 				id: parseInt(customerId),
 				isDynamic: true,
 			});
 
-			var fileEmailAttachObj = null;
+			//Customer Status
+			customer_status_id = customer_record.getValue({
+				fieldId: "entitystatus",
+			});
 
-			if (!isNullorEmpty(proofid)) {
-				customer_record.setValue({
-					fieldId: "custentity_cancel_proof",
-					value: proofid,
-				});
+			var proofid = null;
 
-				fileEmailAttachObj = file.load({
-					id: proofid,
-				});
+			if (customer_status_id == 13) {
+				if (!isNullorEmpty(fileObj)) {
+					fileObj.folder = 3630868;
+					var file_type = fileObj.fileType;
+					if (file_type == "PDF") {
+						file_type == "pdf";
+						var file_name =
+							getDatePDF() + "_" + parseInt(customerId) + "." + file_type;
+						var file_name =
+							getDatePDF() +
+							"_service_change_notification_" +
+							parseInt(customerId) +
+							"." +
+							file_type;
+					}
+					fileObj.name = file_name;
+
+					if (file_type == "PDF") {
+						// Create file and upload it to the file cabinet.
+						proofid = fileObj.save();
+					} else {
+						error.create({
+							message: "Must be in PDF format",
+							name: "PDF_ERROR",
+							notifyOff: true,
+						});
+					}
+				}
+				var fileEmailAttachObj = null;
+
+				if (!isNullorEmpty(proofid)) {
+					customer_record.setValue({
+						fieldId: "custentity_cancel_proof",
+						value: proofid,
+					});
+
+					fileEmailAttachObj = file.load({
+						id: proofid,
+					});
+				}
 			}
 
+
+
+			customer_record.setValue({
+				fieldId: "entitystatus",
+				value: 59,
+			});
 			customer_record.save();
 
 			// var userNoteRecord = record.create({
@@ -703,37 +738,39 @@ define([
 			// });
 
 			// var userNoteRecordId = userNoteRecord.save();
-			if (!isNullorEmpty(fileEmailAttachObj)) {
-				email.send({
-					author: 112209,
-					recipients: [zee_email],
-					subject: emailSubject,
-					body: emailBody,
-					cc: [
-						"fiona.harrison@mailplus.com.au",
-						"sarah.hart@mailplus.com.au",
-						"popie.popie@mailplus.com.au", "madillon.campos@mailplus.com.au", "alexandra.bathman@mailplus.com.au", "beatriz.lima@mailplus.com.au"
-					],
-					attachments: [fileEmailAttachObj],
-					relatedRecords: {
-						entityId: parseInt(customerId),
-					},
-				});
-			} else {
-				email.send({
-					author: 112209,
-					recipients: [zee_email],
-					subject: emailSubject,
-					body: emailBody,
-					cc: [
-						"fiona.harrison@mailplus.com.au",
-						"sarah.hart@mailplus.com.au",
-						"popie.popie@mailplus.com.au", "madillon.campos@mailplus.com.au", "alexandra.bathman@mailplus.com.au", "beatriz.lima@mailplus.com.au"
-					],
-					relatedRecords: {
-						entityId: parseInt(customerId),
-					},
-				});
+			if (customer_status_id == 13) {
+				if (!isNullorEmpty(fileEmailAttachObj)) {
+					email.send({
+						author: 112209,
+						recipients: [zee_email],
+						subject: emailSubject,
+						body: emailBody,
+						cc: [
+							"fiona.harrison@mailplus.com.au",
+							"sarah.hart@mailplus.com.au",
+							"popie.popie@mailplus.com.au", "madillon.campos@mailplus.com.au", "alexandra.bathman@mailplus.com.au", "beatriz.lima@mailplus.com.au"
+						],
+						attachments: [fileEmailAttachObj],
+						relatedRecords: {
+							entityId: parseInt(customerId),
+						},
+					});
+				} else {
+					email.send({
+						author: 112209,
+						recipients: [zee_email],
+						subject: emailSubject,
+						body: emailBody,
+						cc: [
+							"fiona.harrison@mailplus.com.au",
+							"sarah.hart@mailplus.com.au",
+							"popie.popie@mailplus.com.au", "madillon.campos@mailplus.com.au", "alexandra.bathman@mailplus.com.au", "beatriz.lima@mailplus.com.au"
+						],
+						relatedRecords: {
+							entityId: parseInt(customerId),
+						},
+					});
+				}
 			}
 
 			context.response.sendRedirect({
