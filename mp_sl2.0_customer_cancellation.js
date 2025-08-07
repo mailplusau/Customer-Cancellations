@@ -74,10 +74,37 @@ define([
 			customer_id = context.request.parameters.custid;
 			cancellationDirection = context.request.parameters.cancellationDirection;
 
-			var cancellationThemeLinkedListSearch = search.load({
-				id: "customsearch_linked_list_cancel_themes",
-				type: 'customrecord_linked_list_item',
+			var customer_record = record.load({
+				type: record.Type.CUSTOMER,
+				id: customer_id,
+				isDynamic: true,
 			});
+
+			entityid = customer_record.getValue({
+				fieldId: "entityid",
+			});
+
+			companyName = customer_record.getValue({
+				fieldId: "companyname",
+			});
+			//Customer Status
+			customer_status_id = customer_record.getValue({
+				fieldId: "entitystatus",
+			});
+
+
+			if (customer_status_id == 13) {
+				var cancellationThemeLinkedListSearch = search.load({
+					id: "customsearch_linked_list_cancel_themes",
+					type: 'customrecord_linked_list_item',
+				});
+			} else {
+				var cancellationThemeLinkedListSearch = search.load({
+					id: "customsearch_linked_list_cancel_themes_2",
+					type: 'customrecord_linked_list_item',
+				});
+			}
+
 
 			var oldCancellationTheme = null;
 			var oldCancellationThemeText = null;
@@ -184,23 +211,6 @@ define([
 				details: cancellationThemeLinkedListSearch.runPaged().count
 			})
 
-			var customer_record = record.load({
-				type: record.Type.CUSTOMER,
-				id: customer_id,
-				isDynamic: true,
-			});
-
-			entityid = customer_record.getValue({
-				fieldId: "entityid",
-			});
-
-			companyName = customer_record.getValue({
-				fieldId: "companyname",
-			});
-			//Customer Status
-			customer_status_id = customer_record.getValue({
-				fieldId: "entitystatus",
-			});
 
 			zee = customer_record.getValue({
 				fieldId: "partner",
