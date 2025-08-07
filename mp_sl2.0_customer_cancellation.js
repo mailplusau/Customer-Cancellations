@@ -690,11 +690,12 @@ define([
 			}
 
 
-
-			customer_record.setValue({
-				fieldId: "entitystatus",
-				value: 59,
-			});
+			if (customer_status_id != 13) {
+				customer_record.setValue({
+					fieldId: "entitystatus",
+					value: 59,
+				});
+			}
 			customer_record.save();
 
 			// var userNoteRecord = record.create({
