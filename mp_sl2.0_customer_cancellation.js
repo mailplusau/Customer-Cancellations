@@ -128,11 +128,6 @@ define([
 					name: "custrecord_1319_parent", //What
 				});
 
-				log.debug({
-					title: 'cancellationWhat',
-					details: cancellationWhat
-				})
-
 
 				// if (cancellationThemeLength == 0 || oldCancellationTheme == cancellationWhat) {
 				// 	log.debug({
@@ -153,11 +148,6 @@ define([
 						cancellationWhy: cancellationWhyArray,
 					});
 					cancellationThemeLength++;
-
-					log.debug({
-						title: 'cancellationTheme',
-						details: JSON.stringify(cancellationTheme)
-					})
 
 
 					cancellationWhyArray = [];
@@ -187,6 +177,10 @@ define([
 			log.debug({
 				title: 'cancellationTheme',
 				details: JSON.stringify(cancellationTheme)
+			})
+			log.debug({
+				title: 'cancellationWhyFilterArray',
+				details: cancellationWhyFilterArray
 			})
 
 
@@ -362,19 +356,6 @@ define([
 
 			inlineHtml +=
 				'<div class="col-xs-4 cancel_reason"><div class="input-group"><span class="input-group-addon" id="cancel_reason_text">CANCELATION REASON <span class="mandatory" style="color:red">*</span></span><select id="cancel_reason" class="form-control cancel_reason" ><option></option>';
-
-			var cancellation_reason_search = search.create({
-				type: "customlist58",
-				columns: [
-					{
-						name: "name",
-					},
-					{
-						name: "internalId",
-					},
-				],
-				filters: ["isinactive", "is", "false"],
-			});
 
 			cancellationThemeLinkedListSearch.run().each(function (searchResult) {
 				var listValue = searchResult.getValue("name");
