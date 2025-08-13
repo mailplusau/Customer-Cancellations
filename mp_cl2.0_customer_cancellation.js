@@ -480,6 +480,11 @@ define([
 			var noteBody = "";
 		}
 
+		console.log('noteBody: ' + noteBody);
+		console.log('zee_email: ' + zee_email);
+		console.log('emailSubject: ' + emailSubject);
+		console.log('emailBody: ' + emailBody);
+
 		test_record.setValue({
 			fieldId: "custpage_note",
 			value: noteBody,
@@ -515,15 +520,24 @@ define([
 			value: saveDateEffective,
 		});
 
-		customer_record.setValue({
-			fieldId: "custentity_service_cancellation_notice",
-			value: $("#cancel_notice option:selected").val(),
-		});
+		if (customer_status == 13) {
+			customer_record.setValue({
+				fieldId: "custentity_service_cancellation_notice",
+				value: $("#cancel_notice option:selected").val(),
+			});
 
-		customer_record.setValue({
-			fieldId: "custentity_service_cancellation_directio",
-			value: $("#cancellation_in_out_bound option:selected").val(),
-		});
+			customer_record.setValue({
+				fieldId: "custentity_service_cancellation_directio",
+				value: $("#cancellation_in_out_bound option:selected").val(),
+			});
+
+			if (!isNullorEmpty($("#cancel_comp option:selected").val())) {
+				customer_record.setValue({
+					fieldId: "custentity14",
+					value: $("#cancel_comp option:selected").val(),
+				});
+			}
+		}
 
 		// customer_record.setValue({
 		// 	fieldId: "custentity_service_cancellation_reason",
@@ -544,10 +558,7 @@ define([
 			value: $("#cancel_reason option:selected").val(),
 		});
 
-		customer_record.setValue({
-			fieldId: "custentity14",
-			value: $("#cancel_comp option:selected").val(),
-		});
+
 
 		customer_record.setValue({
 			fieldId: "custentity_service_cancelled_by",
